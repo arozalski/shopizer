@@ -243,7 +243,6 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.3</version>
 				<configuration>
-					<exclude>org.drools.*</exclude>
 				</configuration>
 				<executions>
 					<execution>
