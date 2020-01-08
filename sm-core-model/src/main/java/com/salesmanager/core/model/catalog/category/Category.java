@@ -37,6 +37,8 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 
 public class Category extends SalesManagerEntity<Long, Category> implements Auditable {
     private static final long serialVersionUID = 1L;
+
+    public final static String DEFAULT_CATEGORY = "DEFAULT";
     
     @Id
     @Column(name = "CATEGORY_ID", unique=true, nullable=false)

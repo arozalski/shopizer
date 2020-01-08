@@ -1,8 +1,11 @@
 package com.salesmanager.shop.application.config;
 
+import com.salesmanager.shop.init.data.InitData;
 import com.salesmanager.shop.init.data.InitStoreData;
 import java.util.Arrays;
 import java.util.List;
+
+import com.salesmanager.shop.wish.WishProductsStore;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +20,8 @@ public class ShopizerPropertiesConfig {
   }
 
   @Bean
-  public InitStoreData initData() {
-    return new InitStoreData();
+  public InitData initData() {
+    return new WishProductsStore();
   }
 
   @Bean(name = "shopizer-properties")

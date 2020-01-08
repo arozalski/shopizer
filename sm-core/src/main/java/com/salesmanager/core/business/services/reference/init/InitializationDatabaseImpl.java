@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.inject.Inject;
+
+import com.salesmanager.core.business.services.catalog.category.CategoryService;
+import com.salesmanager.core.model.catalog.category.Category;
+import com.salesmanager.core.model.catalog.category.CategoryDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -84,7 +88,9 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	
 	@Inject
 	private OptinService optinService;
-	
+
+	@Inject
+	protected CategoryService categoryService;
 
 	
 	private String name;
@@ -104,8 +110,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		createSubReferences();
 		createModules();
 		createMerchant();
-
-
+		createCategory();
 	}
 	
 
@@ -238,7 +243,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		
 		//create default manufacturer
 		Manufacturer defaultManufacturer = new Manufacturer();
-		defaultManufacturer.setCode("DEFAULT");
+		defaultManufacturer.setCode(Manufacturer.DEFAULT_MANUFACTURER);
 		defaultManufacturer.setMerchantStore(store);
 		
 		ManufacturerDescription manufacturerDescription = new ManufacturerDescription();
@@ -257,6 +262,22 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	   optinService.create(newsletter);
 		
 		
+	}
+
+	private void createCategory() throws ServiceException {
+		MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
+		Language language = languageService.defaultLanguage();
+		Category rootCategory = new Category();
+		rootCategory.setMerchantStore(store);
+		rootCategory.setCode(Category.DEFAULT_CATEGORY);
+		rootCategory.setVisible(true);
+		CategoryDescription description = new CategoryDescription();
+		description.setName("Category description");
+		description.setCategory(rootCategory);
+		description.setLanguage(language);
+		description.setSeUrl("category-default");
+		rootCategory.getDescriptions().add(description);
+		categoryService.create(rootCategory);
 	}
 
 	private void createModules() throws ServiceException {

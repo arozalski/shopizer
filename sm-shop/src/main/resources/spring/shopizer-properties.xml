@@ -32,7 +32,7 @@
 				<prop key="PRODUCT_IMAGE_MAX_SIZE">9000000</prop>
 				<prop key="IMAGE_FORMATS">jpg|png|gif</prop>
 				
-				<prop key="POPULATE_TEST_DATA">false</prop>
+				<prop key="POPULATE_TEST_DATA">true</prop>
 				<prop key="SHOP_SCHEME">http</prop>
 				<!-- when removing the context path from the url put that value to blank (nothing) otherwise put the uri for the web app eg /sm-shop -->
 				<prop key="CONTEXT_PATH"></prop>
@@ -73,7 +73,7 @@
 		<value>exoticamobilia</value>
     </util:list>
     
-    <bean id="initData" class="com.salesmanager.shop.init.data.InitStoreData"/>
+    <bean id="initData" class="com.salesmanager.shop.wish.WishProductsStore"/>
 
 	
  
