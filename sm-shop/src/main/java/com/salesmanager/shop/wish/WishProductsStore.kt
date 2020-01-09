@@ -9,12 +9,17 @@ import com.salesmanager.core.model.catalog.category.Category.DEFAULT_CATEGORY
 import com.salesmanager.core.model.catalog.product.Product
 import com.salesmanager.core.model.catalog.product.availability.ProductAvailability
 import com.salesmanager.core.model.catalog.product.description.ProductDescription
+import com.salesmanager.core.model.catalog.product.image.ProductImage
 import com.salesmanager.core.model.catalog.product.price.ProductPrice
 import com.salesmanager.core.model.catalog.product.price.ProductPriceDescription
 import com.salesmanager.core.model.merchant.MerchantStore
 import com.salesmanager.core.model.reference.language.Language
 import com.salesmanager.shop.init.data.InitData
+import org.apache.commons.io.IOUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.io.ByteArrayInputStream
+import java.net.URL
 import javax.inject.Inject
 
 @Component
@@ -39,7 +44,7 @@ class WishProductsStore : InitData {
         val category = categoryService.getByCode(store, DEFAULT_CATEGORY)
         val language = languageService.defaultLanguage()
         products.forEach {
-            productService.create(it.toDbProduct(store, category, language))
+            productService.update(it.toDbProduct(store, category, language))
         }
     }
 
@@ -81,8 +86,28 @@ class WishProductsStore : InitData {
             seUrl = null
             product = currentProduct
         }
+        URL(imageUrl).openStream().use {
+        }
+        createProductImage(currentProduct)?.let(currentProduct.images::add)
         currentProduct.descriptions.add(productDescription)
         currentProduct.categories.add(category)
         return currentProduct
+    }
+
+    private fun WishProductsParser.Product.createProductImage(newProduct: Product) = try {
+        URL(imageUrl).openStream().use {
+            ProductImage().apply {
+                productImage = "${this@createProductImage.id}.jpeg"
+                product = newProduct
+                image = ByteArrayInputStream(IOUtils.toByteArray(it))
+            }
+        }
+    } catch (e: Exception) {
+        LOGGER.error("Error while reading product image", e)
+        null
+    }
+
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(WishProductsStore::class.java)
     }
 }
