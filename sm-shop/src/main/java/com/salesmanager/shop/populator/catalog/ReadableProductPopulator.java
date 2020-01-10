@@ -403,7 +403,7 @@ public class ReadableProductPopulator extends
 
 			target.setFinalPrice(pricingService.getDisplayAmount(price.getFinalPrice(), store));
 			target.setPrice(price.getFinalPrice());
-			target.setOriginalPrice(pricingService.getDisplayAmount(price.getOriginalPrice(), store));
+			target.setOriginalPrice(price.getOriginalPrice());
 	
 			if(price.isDiscounted()) {
 				target.setDiscounted(true);

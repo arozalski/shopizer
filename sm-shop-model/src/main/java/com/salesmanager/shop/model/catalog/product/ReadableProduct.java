@@ -1,6 +1,7 @@
 package com.salesmanager.shop.model.catalog.product;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.salesmanager.shop.model.catalog.category.ReadableCategory;
@@ -17,7 +18,7 @@ public class ReadableProduct extends ProductEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ProductDescription description;
 	private String finalPrice = "0";
-	private String originalPrice = null;
+	private BigDecimal originalPrice = null;
 	private boolean discounted = false;
 	private ReadableImage image;
 	private List<ReadableImage> images;
@@ -43,10 +44,10 @@ public class ReadableProduct extends ProductEntity implements Serializable {
 	public void setFinalPrice(String finalPrice) {
 		this.finalPrice = finalPrice;
 	}
-	public String getOriginalPrice() {
+	public BigDecimal getOriginalPrice() {
 		return originalPrice;
 	}
-	public void setOriginalPrice(String originalPrice) {
+	public void setOriginalPrice(BigDecimal originalPrice) {
 		this.originalPrice = originalPrice;
 	}
 	public boolean isDiscounted() {
