@@ -95,7 +95,7 @@ class WishProductsStore {
         availability.prices.add(price)
         currentProduct.availabilities.add(availability)
         val productDescription = ProductDescription().apply {
-            name = "Product description"
+            name = this@createDbProduct.name.take(200)
             language = lan
             seUrl = null
             product = currentProduct
