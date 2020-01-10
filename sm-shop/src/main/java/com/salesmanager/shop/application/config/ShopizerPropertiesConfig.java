@@ -5,7 +5,6 @@ import com.salesmanager.shop.init.data.InitStoreData;
 import java.util.Arrays;
 import java.util.List;
 
-import com.salesmanager.shop.wish.WishProductsStore;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,7 @@ public class ShopizerPropertiesConfig {
 
   @Bean
   public InitData initData() {
-    return new WishProductsStore();
+    return new InitStoreData();
   }
 
   @Bean(name = "shopizer-properties")

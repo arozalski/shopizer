@@ -14,16 +14,16 @@ import com.salesmanager.core.model.catalog.product.price.ProductPrice
 import com.salesmanager.core.model.catalog.product.price.ProductPriceDescription
 import com.salesmanager.core.model.merchant.MerchantStore
 import com.salesmanager.core.model.reference.language.Language
-import com.salesmanager.shop.init.data.InitData
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.net.URL
 import javax.inject.Inject
 
 @Component
-class WishProductsStore : InitData {
+class WishProductsStore {
 
     @Inject
     lateinit var merchantService: MerchantStoreService
@@ -34,7 +34,8 @@ class WishProductsStore : InitData {
     @Inject
     lateinit var languageService: LanguageService
 
-    override fun initInitialData() {
+    @Scheduled(fixedRate = 300000)
+    fun run() {
         val products = WishProductsFetcher.fetch(10, 0).let(WishProductsParser::parse)
         store(products)
     }
@@ -53,8 +54,21 @@ class WishProductsStore : InitData {
         category: Category,
         lan: Language
     ): Product {
+        val product = productService.getByCode(id, lan)
+        return if (product != null) {
+            updateDbProduct(lan, product)
+        } else {
+            createDbProduct(store, category, lan)
+        }
+    }
+
+    private fun WishProductsParser.Product.createDbProduct(
+        store: MerchantStore,
+        category: Category,
+        lan: Language
+    ): Product {
         val currentProduct = Product().apply {
-            sku = this@toDbProduct.id
+            sku = this@createDbProduct.id
             manufacturer = null
             type = null
             merchantStore = store
@@ -86,18 +100,41 @@ class WishProductsStore : InitData {
             seUrl = null
             product = currentProduct
         }
-        URL(imageUrl).openStream().use {
-        }
         createProductImage(currentProduct)?.let(currentProduct.images::add)
         currentProduct.descriptions.add(productDescription)
         currentProduct.categories.add(category)
         return currentProduct
     }
 
+    private fun WishProductsParser.Product.updateDbProduct(lan: Language, product: Product): Product {
+        val availability = product.availabilities.last().apply {
+            productQuantity = numberOfBought
+        }
+        val lastPrice = availability.prices.last()
+        if (lastPrice.productPriceSpecialAmount != promoPrice) {
+            val newPrice = ProductPrice().apply {
+                isDefaultPrice = true
+                productPriceAmount = retailPrice
+                productPriceSpecialAmount = promoPrice
+                productAvailability = availability
+            }
+            val priceDescription = ProductPriceDescription().apply {
+                name = "Base price"
+                productPrice = newPrice
+                language = lan
+            }
+            newPrice.descriptions.add(priceDescription)
+            availability.prices.add(newPrice)
+        }
+        product.availabilities.clear()
+        product.availabilities.add(availability)
+        return product
+    }
+
     private fun WishProductsParser.Product.createProductImage(newProduct: Product) = try {
         URL(imageUrl).openStream().use {
             ProductImage().apply {
-                productImage = "${this@createProductImage.id}.jpeg"
+                productImage = "${this@createProductImage.id}.jpg"
                 product = newProduct
                 image = ByteArrayInputStream(IOUtils.toByteArray(it))
             }

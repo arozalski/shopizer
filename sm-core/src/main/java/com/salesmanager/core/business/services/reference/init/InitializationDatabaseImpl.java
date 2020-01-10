@@ -272,10 +272,10 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		rootCategory.setCode(Category.DEFAULT_CATEGORY);
 		rootCategory.setVisible(true);
 		CategoryDescription description = new CategoryDescription();
-		description.setName("Category description");
+		description.setName("All");
 		description.setCategory(rootCategory);
 		description.setLanguage(language);
-		description.setSeUrl("category-default");
+		description.setSeUrl("all");
 		rootCategory.getDescriptions().add(description);
 		categoryService.create(rootCategory);
 	}

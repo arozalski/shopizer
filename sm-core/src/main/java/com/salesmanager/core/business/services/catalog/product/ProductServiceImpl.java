@@ -250,7 +250,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	@Override
 	public void update(Product product) throws ServiceException {
 		this.saveOrUpdate(product);
-		searchService.index(product.getMerchantStore(), product);
+//		searchService.index(product.getMerchantStore(), product);
 	}
 	
 
