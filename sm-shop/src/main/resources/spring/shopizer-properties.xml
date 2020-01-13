@@ -72,16 +72,4 @@
 		<value>generic</value>
 		<value>exoticamobilia</value>
     </util:list>
-    
-    <bean id="initData" class="com.salesmanager.shop.wish.WishProductsStore"/>
-
-	
- 
- 
- 
-	
- 
-
-	
-	
 </beans>
