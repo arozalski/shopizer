@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.net.URL
 import javax.inject.Inject
+import kotlin.random.Random
+import kotlin.random.nextLong
 
 @Component
 class WishProductsStore {
@@ -34,9 +36,10 @@ class WishProductsStore {
     @Inject
     lateinit var languageService: LanguageService
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = ONE_HOUR_IN_MS)
     fun run() {
-        val products = WishProductsFetcher.fetch(10, 0).let(WishProductsParser::parse)
+        Thread.sleep(calculateSleepTime())
+        val products = WishProductsFetcher.fetch(PRODUCT_COUNT, PRODUCT_OFFSET).let(WishProductsParser::parse)
         store(products)
     }
 
@@ -48,6 +51,8 @@ class WishProductsStore {
             productService.update(it.toDbProduct(store, category, language))
         }
     }
+
+    private fun calculateSleepTime() = Random.nextLong(SLEEP_TIME_RANGE)
 
     private fun WishProductsParser.Product.toDbProduct(
         store: MerchantStore,
@@ -145,6 +150,11 @@ class WishProductsStore {
     }
 
     companion object {
+        private const val HALF_HOUR_IN_MS = 1800000L
+        private const val ONE_HOUR_IN_MS = HALF_HOUR_IN_MS * 2
+        private val SLEEP_TIME_RANGE = LongRange(0, HALF_HOUR_IN_MS)
+        private const val PRODUCT_COUNT = 70
+        private const val PRODUCT_OFFSET = 0
         private val LOGGER = LoggerFactory.getLogger(WishProductsStore::class.java)
     }
 }
