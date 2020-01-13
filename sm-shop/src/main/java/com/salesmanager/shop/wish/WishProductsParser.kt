@@ -11,6 +11,7 @@ object WishProductsParser {
         val jsonProducts = getJSONObject("data").getJSONArray("products")
         return (0 until jsonProducts.length()).map {
             val jsonProduct = jsonProducts.getJSONObject(it)
+            val jsonRating = jsonProduct.getJSONObject("product_rating")
             val jsonVariant = jsonProduct.getJSONObject("commerce_product_info").getJSONArray("variations").getJSONObject(0)
             Product(
                 id = jsonProduct.getString("id"),
@@ -18,7 +19,8 @@ object WishProductsParser {
                 description = "",
                 retailPrice = jsonVariant.getJSONObject("localized_retail_price").getDouble("localized_value").toBigDecimal(),
                 promoPrice = jsonVariant.getJSONObject("localized_price").getDouble("localized_value").toBigDecimal(),
-                rating = jsonProduct.getJSONObject("product_rating").getDouble("rating"),
+                rating = jsonRating.getDouble("rating").toBigDecimal(),
+                ratingCount = jsonRating.getInt("rating_count"),
                 numberOfBought = jsonProduct.getInt("num_bought"),
                 imageUrl = jsonProduct.getString("small_picture")
             )
@@ -31,7 +33,8 @@ object WishProductsParser {
         val description: String,
         val retailPrice: BigDecimal,
         val promoPrice: BigDecimal,
-        val rating: Double,
+        val rating: BigDecimal,
+        val ratingCount: Int,
         val numberOfBought: Int,
         val imageUrl: String
     )

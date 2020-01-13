@@ -78,6 +78,8 @@ class WishProductsStore {
             type = null
             merchantStore = store
             isProductShipeable = true
+            productReviewAvg = rating
+            productReviewCount = ratingCount
         }
         val availability = ProductAvailability().apply {
             productDateAvailable = null
