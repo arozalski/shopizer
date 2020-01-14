@@ -4,7 +4,6 @@ import com.salesmanager.core.business.exception.ServiceException
 import com.salesmanager.core.business.services.catalog.category.CategoryService
 import com.salesmanager.core.business.services.catalog.product.manufacturer.ManufacturerService
 import com.salesmanager.core.business.services.catalog.product.type.ProductTypeService
-import com.salesmanager.core.business.services.customer.CustomerService
 import com.salesmanager.core.business.services.merchant.MerchantStoreService
 import com.salesmanager.core.business.services.reference.country.CountryService
 import com.salesmanager.core.business.services.reference.currency.CurrencyService
@@ -21,10 +20,6 @@ import com.salesmanager.core.model.catalog.category.CategoryDescription
 import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer
 import com.salesmanager.core.model.catalog.product.manufacturer.ManufacturerDescription
 import com.salesmanager.core.model.catalog.product.type.ProductType
-import com.salesmanager.core.model.common.Billing
-import com.salesmanager.core.model.common.Delivery
-import com.salesmanager.core.model.customer.Customer
-import com.salesmanager.core.model.customer.CustomerGender
 import com.salesmanager.core.model.merchant.MerchantStore
 import com.salesmanager.core.model.reference.country.Country
 import com.salesmanager.core.model.reference.country.CountryDescription
@@ -69,8 +64,6 @@ open class InitializationDatabaseImpl : InitializationDatabase {
     lateinit var optinService: OptinService
     @Inject
     lateinit var categoryService: CategoryService
-    @Inject
-    lateinit var customerService: CustomerService
     private var name: String? = null
 
     override fun isEmpty() = languageService.count() == 0L
@@ -89,8 +82,6 @@ open class InitializationDatabaseImpl : InitializationDatabase {
         val store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE)
         val language = languageService.defaultLanguage()
         createCategory(store, language)
-        val country = countryService.getByCode("PL")
-        createCustomer(store, language, country)
     }
 
     @Throws(ServiceException::class)
@@ -237,25 +228,6 @@ open class InitializationDatabaseImpl : InitializationDatabase {
         description.seUrl = "all"
         rootCategory.descriptions.add(description)
         categoryService.create(rootCategory)
-    }
-
-    @Throws(ServiceException::class)
-    private fun createCustomer(store: MerchantStore, language: Language, country: Country) {
-        Customer().apply {
-            merchantStore = store
-            emailAddress = "robert.lewandowski@shopizer.com"
-            gender = CustomerGender.M
-            isAnonymous = false
-            defaultLanguage = language
-            nick = "RL9"
-            password = "password"
-            delivery = Delivery()
-            billing = Billing().apply {
-                firstName = "Robert"
-                lastName = "Lewandowski"
-                this.country = country
-            }
-        }.let(customerService::saveOrUpdate)
     }
 
     @Throws(ServiceException::class)

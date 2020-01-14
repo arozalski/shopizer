@@ -16,7 +16,6 @@ import com.salesmanager.core.model.catalog.product.price.ProductPrice
 import com.salesmanager.core.model.catalog.product.price.ProductPriceDescription
 import com.salesmanager.core.model.merchant.MerchantStore
 import com.salesmanager.core.model.reference.language.Language
-import com.salesmanager.shop.wish.review.WishProductReviewGenerator
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -59,21 +58,9 @@ class WishProductsStore {
         val language = languageService.defaultLanguage()
         val customers = customerService.getListByStore(store)
         products.forEach {
-            it.toDbProduct(store, category, language).let { product ->
-                val isNewProduct = product.isNewProduct()
-                saveProduct(product)
-                if (isNewProduct) {
-                    customers.forEach { customer ->
-                        WishProductReviewGenerator.generate(product, customer, language).let(reviewService::update)
-                    }
-                }
-            }
+            it.toDbProduct(store, category, language).let(productService::update)
         }
     }
-
-    private fun Product.isNewProduct() = id == null || id == 0L
-
-    private fun saveProduct(product: Product) = productService.update(product)
 
     private fun calculateSleepTime() = Random.nextLong(SLEEP_TIME_RANGE)
 
@@ -177,7 +164,7 @@ class WishProductsStore {
     companion object {
         private const val HALF_HOUR_IN_MS = 1800000L
         private const val ONE_HOUR_IN_MS = HALF_HOUR_IN_MS * 2
-        private val SLEEP_TIME_RANGE = LongRange(0, 0)
+        private val SLEEP_TIME_RANGE = LongRange(0, HALF_HOUR_IN_MS)
         private const val PRODUCT_COUNT = 70
         private const val PRODUCT_OFFSET = 0
         private val LOGGER = LoggerFactory.getLogger(WishProductsStore::class.java)
