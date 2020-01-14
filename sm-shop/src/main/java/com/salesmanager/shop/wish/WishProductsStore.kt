@@ -2,6 +2,8 @@ package com.salesmanager.shop.wish
 
 import com.salesmanager.core.business.services.catalog.category.CategoryService
 import com.salesmanager.core.business.services.catalog.product.ProductService
+import com.salesmanager.core.business.services.catalog.product.review.ProductReviewService
+import com.salesmanager.core.business.services.customer.CustomerService
 import com.salesmanager.core.business.services.merchant.MerchantStoreService
 import com.salesmanager.core.business.services.reference.language.LanguageService
 import com.salesmanager.core.model.catalog.category.Category
@@ -14,6 +16,7 @@ import com.salesmanager.core.model.catalog.product.price.ProductPrice
 import com.salesmanager.core.model.catalog.product.price.ProductPriceDescription
 import com.salesmanager.core.model.merchant.MerchantStore
 import com.salesmanager.core.model.reference.language.Language
+import com.salesmanager.shop.wish.review.WishProductReviewGenerator
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -35,6 +38,10 @@ class WishProductsStore {
     lateinit var productService: ProductService
     @Inject
     lateinit var languageService: LanguageService
+    @Inject
+    lateinit var reviewService: ProductReviewService
+    @Inject
+    lateinit var customerService: CustomerService
 
     @Scheduled(fixedRate = ONE_HOUR_IN_MS)
     fun run() {
@@ -47,8 +54,27 @@ class WishProductsStore {
         val store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE)
         val category = categoryService.getByCode(store, DEFAULT_CATEGORY)
         val language = languageService.defaultLanguage()
+        val customers = customerService.getListByStore(store)
         products.forEach {
-            productService.update(it.toDbProduct(store, category, language))
+            it.toDbProduct(store, category, language).let { product ->
+                val isNewProduct = product.isNewProduct()
+                saveProduct(product)
+                if (isNewProduct) {
+                    customers.forEach { customer ->
+                        WishProductReviewGenerator.generate(product, customer, language).let(reviewService::update)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun Product.isNewProduct() = id == null || id == 0L
+
+    private fun saveProduct(product: Product) = productService.update(product)
+
+    private fun Product.onNewProduct(action: (Product) -> Unit) {
+        if (id == null || id == 0L) {
+            action(this)
         }
     }
 
@@ -154,7 +180,7 @@ class WishProductsStore {
     companion object {
         private const val HALF_HOUR_IN_MS = 1800000L
         private const val ONE_HOUR_IN_MS = HALF_HOUR_IN_MS * 2
-        private val SLEEP_TIME_RANGE = LongRange(0, HALF_HOUR_IN_MS)
+        private val SLEEP_TIME_RANGE = LongRange(0, 0)
         private const val PRODUCT_COUNT = 70
         private const val PRODUCT_OFFSET = 0
         private val LOGGER = LoggerFactory.getLogger(WishProductsStore::class.java)
