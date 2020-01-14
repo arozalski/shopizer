@@ -72,12 +72,6 @@ class WishProductsStore {
 
     private fun saveProduct(product: Product) = productService.update(product)
 
-    private fun Product.onNewProduct(action: (Product) -> Unit) {
-        if (id == null || id == 0L) {
-            action(this)
-        }
-    }
-
     private fun calculateSleepTime() = Random.nextLong(SLEEP_TIME_RANGE)
 
     private fun WishProductsParser.Product.toDbProduct(
