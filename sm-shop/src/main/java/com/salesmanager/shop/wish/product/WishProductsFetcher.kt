@@ -1,4 +1,4 @@
-package com.salesmanager.shop.wish
+package com.salesmanager.shop.wish.product
 
 import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods.HttpPost

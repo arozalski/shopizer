@@ -1,4 +1,4 @@
-package com.salesmanager.shop.wish
+package com.salesmanager.shop.wish.product
 
 import com.salesmanager.core.business.services.catalog.category.CategoryService
 import com.salesmanager.core.business.services.catalog.product.ProductService
@@ -46,7 +46,10 @@ class WishProductsStore {
     @Scheduled(fixedRate = ONE_HOUR_IN_MS)
     fun run() {
         Thread.sleep(calculateSleepTime())
-        val products = WishProductsFetcher.fetch(PRODUCT_COUNT, PRODUCT_OFFSET).let(WishProductsParser::parse)
+        val products = WishProductsFetcher.fetch(
+            PRODUCT_COUNT,
+            PRODUCT_OFFSET
+        ).let(WishProductsParser::parse)
         store(products)
     }
 

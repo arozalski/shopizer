@@ -1,4 +1,4 @@
-package com.salesmanager.shop.wish
+package com.salesmanager.shop.wish.product
 
 import org.json.JSONObject
 import java.math.BigDecimal
