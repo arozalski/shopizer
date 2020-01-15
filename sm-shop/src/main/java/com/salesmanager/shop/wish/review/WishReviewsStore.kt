@@ -15,9 +15,9 @@ import com.salesmanager.core.model.common.Delivery
 import com.salesmanager.core.model.customer.Customer
 import com.salesmanager.core.model.merchant.MerchantStore
 import com.salesmanager.core.model.reference.language.Language
+import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.util.*
 import javax.inject.Inject
 
 @Component
@@ -59,7 +59,11 @@ class WishReviewsStore {
 
     private fun store(reviews: List<WishReviewsParser.Review>, product: Product, language: Language, store: MerchantStore) {
         reviews.forEach {
-            reviewService.update(it.toDbReview(product, language, store))
+            try {
+                reviewService.update(it.toDbReview(product, language, store))
+            } catch (e: Exception) {
+                LOGGER.error("Error while saving product review: ${e.printStackTrace()}")
+            }
         }
         reviewedProductIds.add(product.id)
     }
@@ -67,7 +71,7 @@ class WishReviewsStore {
     private fun WishReviewsParser.Review.toDbReview(product: Product, language: Language, store: MerchantStore): ProductReview {
         val review = ProductReview().apply {
             reviewRating = rating.toDouble()
-            reviewDate = Date()
+            reviewDate = createdAt
             customer = provideCustomer(language, store)
             this.product = product
         }
@@ -108,5 +112,6 @@ class WishReviewsStore {
     companion object {
         private const val REVIEW_COUNT = 30
         private const val SCHEDULER_RATE = 60000L
+        private val LOGGER = LoggerFactory.getLogger(WishReviewsStore::class.java)
     }
 }
