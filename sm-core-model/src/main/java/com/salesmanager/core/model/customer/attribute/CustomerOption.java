@@ -35,7 +35,8 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 	@UniqueConstraint(columnNames = {"MERCHANT_ID", "CUSTOMER_OPT_CODE"}))
 public class CustomerOption extends SalesManagerEntity<Long, CustomerOption> {
 	private static final long serialVersionUID = -2019269055342226086L;
-	
+	public static final String CUSTOMER_STATUS_CODE = "customer_status";
+
 	@Id
 	@Column(name="CUSTOMER_OPTION_ID")
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "CUSTOMER_OPTION_SEQ_NEXT_VAL")

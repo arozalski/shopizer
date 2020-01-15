@@ -4,6 +4,8 @@ import com.salesmanager.core.business.exception.ServiceException
 import com.salesmanager.core.business.services.catalog.category.CategoryService
 import com.salesmanager.core.business.services.catalog.product.manufacturer.ManufacturerService
 import com.salesmanager.core.business.services.catalog.product.type.ProductTypeService
+import com.salesmanager.core.business.services.customer.attribute.CustomerOptionService
+import com.salesmanager.core.business.services.customer.attribute.CustomerOptionValueService
 import com.salesmanager.core.business.services.merchant.MerchantStoreService
 import com.salesmanager.core.business.services.reference.country.CountryService
 import com.salesmanager.core.business.services.reference.currency.CurrencyService
@@ -20,6 +22,12 @@ import com.salesmanager.core.model.catalog.category.CategoryDescription
 import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer
 import com.salesmanager.core.model.catalog.product.manufacturer.ManufacturerDescription
 import com.salesmanager.core.model.catalog.product.type.ProductType
+import com.salesmanager.core.model.customer.attribute.CustomerOption
+import com.salesmanager.core.model.customer.attribute.CustomerOption.CUSTOMER_STATUS_CODE
+import com.salesmanager.core.model.customer.attribute.CustomerOptionDescription
+import com.salesmanager.core.model.customer.attribute.CustomerOptionValue
+import com.salesmanager.core.model.customer.attribute.CustomerOptionValueDescription
+import com.salesmanager.core.model.customer.attribute.status.CustomerStatus
 import com.salesmanager.core.model.merchant.MerchantStore
 import com.salesmanager.core.model.reference.country.Country
 import com.salesmanager.core.model.reference.country.CountryDescription
@@ -64,6 +72,10 @@ open class InitializationDatabaseImpl : InitializationDatabase {
     lateinit var optinService: OptinService
     @Inject
     lateinit var categoryService: CategoryService
+    @Inject
+    lateinit var customerOptionService: CustomerOptionService
+    @Inject
+    lateinit var customerOptionValueService: CustomerOptionValueService
     private var name: String? = null
 
     override fun isEmpty() = languageService.count() == 0L
@@ -82,6 +94,7 @@ open class InitializationDatabaseImpl : InitializationDatabase {
         val store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE)
         val language = languageService.defaultLanguage()
         createCategory(store, language)
+        createCustomerOption(store, language)
     }
 
     @Throws(ServiceException::class)
@@ -228,6 +241,36 @@ open class InitializationDatabaseImpl : InitializationDatabase {
         description.seUrl = "all"
         rootCategory.descriptions.add(description)
         categoryService.create(rootCategory)
+    }
+
+    @Throws(ServiceException::class)
+    private fun createCustomerOption(store: MerchantStore, language: Language) {
+        val customerOption = CustomerOption().apply {
+            code = CUSTOMER_STATUS_CODE
+            isActive = true
+            isPublicOption = true
+            merchantStore = store
+        }
+        val customerOptionDescription = setOf(CustomerOptionDescription().apply {
+            this.language = language
+            this.customerOption = customerOption
+            name = CUSTOMER_STATUS_CODE
+        })
+        customerOption.descriptions = customerOptionDescription
+        customerOptionService.saveOrUpdate(customerOption)
+        CustomerStatus.values().forEach {
+            val customerOptionValue = CustomerOptionValue().apply {
+                code = it.value
+                merchantStore = store
+            }
+            val customerOptionValueDescription = setOf(CustomerOptionValueDescription().apply {
+                this.language = language
+                this.customerOptionValue = customerOptionValue
+                name = it.value
+            })
+            customerOptionValue.descriptions = customerOptionValueDescription
+            customerOptionValueService.saveOrUpdate(customerOptionValue)
+        }
     }
 
     @Throws(ServiceException::class)
