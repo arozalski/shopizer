@@ -22,7 +22,7 @@ object WishProductsParser {
                 rating = jsonRating.getDouble("rating").toBigDecimal(),
                 ratingCount = jsonRating.getInt("rating_count"),
                 numberOfBought = jsonProduct.getInt("num_bought"),
-                imageUrl = jsonProduct.getString("small_picture")
+                imageUrl = jsonProduct.getString("contest_page_picture")
             )
         }
     }
