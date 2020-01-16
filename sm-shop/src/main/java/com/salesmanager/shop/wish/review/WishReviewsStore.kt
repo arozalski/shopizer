@@ -95,7 +95,7 @@ class WishReviewsStore {
         val description = ProductReviewDescription().apply {
             productReview = review
             name = "review-name"
-            description = comment
+            description = comment.valueOrDefault("OK")
             this.language = currentLanguage
         }
         review.descriptions.add(description)
