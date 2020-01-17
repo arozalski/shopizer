@@ -29,7 +29,7 @@ import com.salesmanager.shop.store.security.AuthenticationResponse;
 
 @SpringBootTest(classes = ShopApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
-public class ServicesTestSupport {
+public abstract class ServicesTestSupport {
 
     @Autowired
     protected TestRestTemplate testRestTemplate;

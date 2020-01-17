@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.catalog.category.CategoryService;
@@ -50,7 +51,7 @@ import com.salesmanager.test.configuration.ConfigurationTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=ConfigurationTest.class)
-public class AbstractSalesManagerCoreTestCase {
+public abstract class AbstractSalesManagerCoreTestCase {
 
 	
 	
@@ -144,6 +145,9 @@ public class AbstractSalesManagerCoreTestCase {
 	
 	@Inject
 	protected EmailService emailService;
+
+	@Inject
+	protected PasswordEncoder passwordEncoder;
 	
 	@Before
 	public void init() throws ServiceException {
