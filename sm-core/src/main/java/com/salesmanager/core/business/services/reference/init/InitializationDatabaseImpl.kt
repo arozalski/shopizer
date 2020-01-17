@@ -43,6 +43,7 @@ import com.salesmanager.core.model.system.optin.OptinType
 import com.salesmanager.core.model.tax.taxclass.TaxClass
 import com.salesmanager.core.model.user.GroupType
 import org.slf4j.LoggerFactory
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Date
@@ -84,6 +85,8 @@ open class InitializationDatabaseImpl : InitializationDatabase {
     lateinit var customerOptionValueService: CustomerOptionValueService
     @Inject
     lateinit var customerService: CustomerService
+    @Inject
+    lateinit var passwordEncoder: PasswordEncoder
     private var name: String? = null
 
     override fun isEmpty() = languageService.count() == 0L
@@ -293,7 +296,7 @@ open class InitializationDatabaseImpl : InitializationDatabase {
             dateOfBirth = Date()
             defaultLanguage = language
             nick = "shopizer"
-            password = "password"
+            password = passwordEncoder.encode("password")
             delivery = Delivery().apply {
                 address = "358 Du Languadoc"
                 city = "Boucherville"
