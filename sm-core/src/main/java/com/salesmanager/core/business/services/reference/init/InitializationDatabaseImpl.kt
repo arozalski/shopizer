@@ -4,6 +4,7 @@ import com.salesmanager.core.business.exception.ServiceException
 import com.salesmanager.core.business.services.catalog.category.CategoryService
 import com.salesmanager.core.business.services.catalog.product.manufacturer.ManufacturerService
 import com.salesmanager.core.business.services.catalog.product.type.ProductTypeService
+import com.salesmanager.core.business.services.customer.CustomerService
 import com.salesmanager.core.business.services.customer.attribute.CustomerOptionService
 import com.salesmanager.core.business.services.customer.attribute.CustomerOptionValueService
 import com.salesmanager.core.business.services.merchant.MerchantStoreService
@@ -22,6 +23,10 @@ import com.salesmanager.core.model.catalog.category.CategoryDescription
 import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer
 import com.salesmanager.core.model.catalog.product.manufacturer.ManufacturerDescription
 import com.salesmanager.core.model.catalog.product.type.ProductType
+import com.salesmanager.core.model.common.Billing
+import com.salesmanager.core.model.common.Delivery
+import com.salesmanager.core.model.customer.Customer
+import com.salesmanager.core.model.customer.CustomerGender
 import com.salesmanager.core.model.customer.attribute.CustomerOption
 import com.salesmanager.core.model.customer.attribute.CustomerOption.CUSTOMER_STATUS_CODE
 import com.salesmanager.core.model.customer.attribute.CustomerOptionDescription
@@ -36,6 +41,7 @@ import com.salesmanager.core.model.reference.language.Language
 import com.salesmanager.core.model.system.optin.Optin
 import com.salesmanager.core.model.system.optin.OptinType
 import com.salesmanager.core.model.tax.taxclass.TaxClass
+import com.salesmanager.core.model.user.GroupType
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -76,6 +82,8 @@ open class InitializationDatabaseImpl : InitializationDatabase {
     lateinit var customerOptionService: CustomerOptionService
     @Inject
     lateinit var customerOptionValueService: CustomerOptionValueService
+    @Inject
+    lateinit var customerService: CustomerService
     private var name: String? = null
 
     override fun isEmpty() = languageService.count() == 0L
@@ -95,6 +103,7 @@ open class InitializationDatabaseImpl : InitializationDatabase {
         val language = languageService.defaultLanguage()
         createCategory(store, language)
         createCustomerOption(store, language)
+        createDummyCustomer(store, language)
     }
 
     @Throws(ServiceException::class)
@@ -271,6 +280,38 @@ open class InitializationDatabaseImpl : InitializationDatabase {
             customerOptionValue.descriptions = customerOptionValueDescription
             customerOptionValueService.saveOrUpdate(customerOptionValue)
         }
+    }
+
+    @Throws(ServiceException::class)
+    private fun createDummyCustomer(store: MerchantStore, language: Language) {
+        val customer = Customer().apply {
+            merchantStore = store
+            emailAddress = "test@shopizer.com"
+            gender = CustomerGender.M
+            isAnonymous = false
+            company = "CSTI Consulting"
+            dateOfBirth = Date()
+            defaultLanguage = language
+            nick = "shopizer"
+            password = "password"
+            delivery = Delivery().apply {
+                address = "358 Du Languadoc"
+                city = "Boucherville"
+                firstName = "Leonardo"
+                lastName = "DiCaprio"
+                postalCode = "J4B-8J9"
+            }
+            billing = Billing().apply {
+                address = "358 Du Languadoc"
+                city = "Boucherville"
+                company = "CSTI Consulting"
+                firstName = "Leonardo"
+                lastName = "DiCaprio"
+                postalCode = "J4B-8J9"
+                country = countryService.getByCode("PL")
+            }
+        }
+        customerService.create(customer)
     }
 
     @Throws(ServiceException::class)
