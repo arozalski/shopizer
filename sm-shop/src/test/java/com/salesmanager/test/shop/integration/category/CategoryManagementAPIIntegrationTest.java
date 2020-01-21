@@ -1,12 +1,15 @@
 package com.salesmanager.test.shop.integration.category;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.salesmanager.core.business.constants.Constants;
+import com.salesmanager.shop.application.ShopApplication;
+import com.salesmanager.shop.model.catalog.category.*;
+import com.salesmanager.shop.model.catalog.manufacturer.PersistableManufacturer;
+import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
+import com.salesmanager.shop.model.catalog.product.PersistableProduct;
+import com.salesmanager.shop.model.catalog.product.ProductSpecification;
+import com.salesmanager.test.shop.common.ServicesTestSupport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +21,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.salesmanager.core.business.constants.Constants;
-import com.salesmanager.shop.application.ShopApplication;
-import com.salesmanager.shop.model.catalog.category.Category;
-import com.salesmanager.shop.model.catalog.category.CategoryDescription;
-import com.salesmanager.shop.model.catalog.category.PersistableCategory;
-import com.salesmanager.shop.model.catalog.category.ReadableCategory;
-import com.salesmanager.shop.model.catalog.manufacturer.PersistableManufacturer;
-import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
-import com.salesmanager.shop.model.catalog.product.PersistableProduct;
-import com.salesmanager.shop.model.catalog.product.ProductSpecification;
-import com.salesmanager.test.shop.common.ServicesTestSupport;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @SpringBootTest(classes = ShopApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
@@ -50,12 +49,12 @@ public class CategoryManagementAPIIntegrationTest extends ServicesTestSupport {
     public void getCategory() throws Exception {
         final HttpEntity<String> httpEntity = new HttpEntity<>(getHeader());
 
-        final ResponseEntity<List> response = testRestTemplate.exchange(String.format("/api/v1/category/"), HttpMethod.GET,
-                httpEntity, List.class);
+        final ResponseEntity<ReadableCategoryList> response = testRestTemplate.exchange(String.format("/api/v1/category/"), HttpMethod.GET,
+                httpEntity, ReadableCategoryList.class);
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new Exception(response.toString());
         } else {
-            final List<ReadableCategory> categories = response.getBody();
+            final List<ReadableCategory> categories = response.getBody().getCategories();
             assertNotNull(categories);
         }
     }
@@ -314,7 +313,7 @@ public class CategoryManagementAPIIntegrationTest extends ServicesTestSupport {
         final HttpEntity<String> entity = new HttpEntity<>(json, getHeader());
 
         final int sizeBefore = testRestTemplate.exchange(String.format("/api/v1/category"), HttpMethod.GET,
-                new HttpEntity<>(getHeader()), List.class).getBody().size();
+                new HttpEntity<>(getHeader()), ReadableCategoryList.class).getBody().getCategories().size();
 
         final ResponseEntity response = testRestTemplate.postForEntity("/api/v1/private/category", entity, PersistableCategory.class);
 

@@ -483,14 +483,14 @@ public class UserController {
 		if(user.getId()!=null) {
 			dbUser = userService.getByUserName(user.getAdminName());
 			if(dbUser==null) {
-				return "redirect://admin/users/displayUser.html";
+				return "redirect:///admin/users/displayUser.html";
 			}
 		}
 
 		List<Group> submitedGroups = user.getGroups();
 		Set<Integer> ids = new HashSet<Integer>();
 		for(Group group : submitedGroups) {
-			ids.add(Integer.parseInt(group.getGroupName()));
+			ids.add(group.getId());
 		}
 		
 
@@ -526,7 +526,7 @@ public class UserController {
 		
 		if(user.getId()!=null && user.getId()>0) {
 			if(user.getId().longValue()!=dbUser.getId().longValue()) {
-				return "redirect://admin/users/displayUser.html";
+				return "redirect:///admin/users/displayUser.html";
 			}
 			
 			List<Group> groups = dbUser.getGroups();

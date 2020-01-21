@@ -1,14 +1,15 @@
 package com.salesmanager.shop.mapper.catalog;
 
-import java.util.Optional;
-import java.util.Set;
-import org.springframework.stereotype.Component;
 import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer;
 import com.salesmanager.core.model.catalog.product.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.mapper.Mapper;
 import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
+import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class ReadableManufacturerMapper implements Mapper<Manufacturer, ReadableManufacturer> {
@@ -64,6 +65,12 @@ public class ReadableManufacturerMapper implements Mapper<Manufacturer, Readable
     desc.setDescription(description.getName());
     desc.setDescription(description.getDescription());
     return desc;
+  }
+
+  @Override
+  public ReadableManufacturer convert(Manufacturer source, ReadableManufacturer destination,
+      MerchantStore store, Language language) {
+    return destination;
   }
 
 }

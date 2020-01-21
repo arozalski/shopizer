@@ -1,9 +1,9 @@
 package com.salesmanager.shop.model.catalog.product;
 
+import com.salesmanager.shop.model.entity.ReadableList;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.salesmanager.shop.model.ReadableList;
 
 public class ReadableProductList extends ReadableList {
 	

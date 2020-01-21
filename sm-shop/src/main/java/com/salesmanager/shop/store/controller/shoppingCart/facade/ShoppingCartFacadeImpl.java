@@ -3,26 +3,6 @@
  */
 package com.salesmanager.shop.store.controller.shoppingCart.facade;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.inject.Inject;
-import javax.persistence.NoResultException;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.catalog.product.PricingService;
 import com.salesmanager.core.business.services.catalog.product.ProductService;
@@ -39,17 +19,25 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.shoppingcart.ShoppingCart;
 import com.salesmanager.shop.constants.Constants;
-import com.salesmanager.shop.model.shoppingcart.CartModificationException;
-import com.salesmanager.shop.model.shoppingcart.PersistableShoppingCartItem;
-import com.salesmanager.shop.model.shoppingcart.ReadableShoppingCart;
-import com.salesmanager.shop.model.shoppingcart.ShoppingCartAttribute;
-import com.salesmanager.shop.model.shoppingcart.ShoppingCartData;
-import com.salesmanager.shop.model.shoppingcart.ShoppingCartItem;
+import com.salesmanager.shop.model.shoppingcart.*;
 import com.salesmanager.shop.populator.shoppingCart.ReadableShoppingCartPopulator;
 import com.salesmanager.shop.populator.shoppingCart.ShoppingCartDataPopulator;
 import com.salesmanager.shop.store.api.exception.ResourceNotFoundException;
 import com.salesmanager.shop.utils.DateUtil;
 import com.salesmanager.shop.utils.ImageFilePath;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import java.util.*;
 
 /**
  * @author Umesh Awasthi
@@ -263,11 +251,11 @@ public class ShoppingCartFacadeImpl
 		Product product = productService.getById(shoppingCartItem.getProduct());
 
 		if (product == null) {
-			throw new Exception("Item with id " + shoppingCartItem.getProduct() + " does not exist");
+			throw new ResourceNotFoundException("Item with id " + shoppingCartItem.getProduct() + " does not exist");
 		}
 
 		if (product.getMerchantStore().getId().intValue() != store.getId().intValue()) {
-			throw new Exception("Item with id " + shoppingCartItem.getProduct() + " does not belong to merchant "
+			throw new ResourceNotFoundException("Item with id " + shoppingCartItem.getProduct() + " does not belong to merchant "
 					+ store.getId());
 		}
 		
@@ -745,7 +733,9 @@ public class ShoppingCartFacadeImpl
             }
         }
 	    //delete item
-	    shoppingCartService.deleteShoppingCartItem(itemToDelete.getId());
+	    if(itemToDelete!=null) {
+	      shoppingCartService.deleteShoppingCartItem(itemToDelete.getId());
+	    }
         
         //remaining items
         cart.setLineItems(items);

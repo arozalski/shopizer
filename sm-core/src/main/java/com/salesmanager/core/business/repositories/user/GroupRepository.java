@@ -1,13 +1,12 @@
 package com.salesmanager.core.business.repositories.user;
 
-import java.util.List;
-import java.util.Set;
-
+import com.salesmanager.core.model.user.Group;
+import com.salesmanager.core.model.user.GroupType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.salesmanager.core.model.user.Group;
-import com.salesmanager.core.model.user.GroupType;
+import java.util.List;
+import java.util.Set;
 
 public interface GroupRepository extends JpaRepository<Group, Integer> {
 
@@ -29,5 +28,6 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 	@Query("select distinct g from Group as g left join fetch g.permissions perms where g.groupType = ?1")
 	List<Group> findByType(GroupType type);
 	
+	@Query("select g from Group as g left join fetch g.permissions perms where g.groupName =?1")
 	Group findByGroupName(String name);
 }

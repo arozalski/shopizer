@@ -51,7 +51,6 @@ import com.salesmanager.shop.store.controller.order.facade.OrderFacade;
 import com.salesmanager.shop.store.controller.shoppingCart.facade.ShoppingCartFacade;
 import com.salesmanager.shop.utils.EmailTemplatesUtils;
 import com.salesmanager.shop.utils.LabelUtils;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
@@ -87,7 +86,7 @@ public class ShoppingOrderController extends AbstractController {
 	private static final Logger LOGGER = LoggerFactory
 	.getLogger(ShoppingOrderController.class);
 	
-	@Value("${googleMapsKey}")
+	@Value("${config.googleMapsKey}")
 	private String googleMapsKey;
 	
 	@Inject

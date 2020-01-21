@@ -1,17 +1,12 @@
 package com.salesmanager.core.business.services.content;
 
-import java.util.List;
-
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.common.generic.SalesManagerEntityService;
-import com.salesmanager.core.model.content.Content;
-import com.salesmanager.core.model.content.ContentDescription;
-import com.salesmanager.core.model.content.ContentType;
-import com.salesmanager.core.model.content.FileContentType;
-import com.salesmanager.core.model.content.InputContentFile;
-import com.salesmanager.core.model.content.OutputContentFile;
+import com.salesmanager.core.model.content.*;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
+
+import java.util.List;
 
 
 
@@ -45,6 +40,9 @@ public interface ContentService
 
     Content getByCode( String code, MerchantStore store, Language language )
         throws ServiceException;
+    
+    Content getById( Long id, MerchantStore store, Language language )
+            throws ServiceException;
 
     /**
      * Method responsible for storing content file for given Store.Files for given merchant store will be stored in

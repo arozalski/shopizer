@@ -1,15 +1,17 @@
 package com.salesmanager.test.catalog;
 
-import static org.junit.Assert.assertNotNull;
-import java.util.HashSet;
-import java.util.Set;
-import org.junit.Test;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.model.catalog.category.Category;
 import com.salesmanager.core.model.catalog.category.CategoryDescription;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import junit.framework.Assert;
+import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertNotNull;
 
 
 public class CategoryTest extends com.salesmanager.test.common.AbstractSalesManagerCoreTestCase {

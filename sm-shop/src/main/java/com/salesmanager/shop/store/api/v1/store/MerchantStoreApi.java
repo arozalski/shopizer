@@ -1,51 +1,46 @@
 package com.salesmanager.shop.store.api.v1.store;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.Principal;
-import java.util.Map;
-import java.util.Optional;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import com.google.common.collect.ImmutableMap;
-import com.salesmanager.core.business.services.reference.language.LanguageService;
+import com.salesmanager.core.model.common.Criteria;
 import com.salesmanager.core.model.content.FileContentType;
 import com.salesmanager.core.model.content.InputContentFile;
 import com.salesmanager.core.model.merchant.MerchantStoreCriteria;
+import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.entity.EntityExists;
-import com.salesmanager.shop.model.shop.PersistableBrand;
-import com.salesmanager.shop.model.shop.PersistableMerchantStore;
-import com.salesmanager.shop.model.shop.ReadableBrand;
-import com.salesmanager.shop.model.shop.ReadableMerchantStore;
-import com.salesmanager.shop.model.shop.ReadableMerchantStoreList;
+import com.salesmanager.shop.model.store.*;
 import com.salesmanager.shop.store.api.exception.RestApiException;
 import com.salesmanager.shop.store.api.exception.UnauthorizedException;
 import com.salesmanager.shop.store.controller.store.facade.StoreFacade;
 import com.salesmanager.shop.store.controller.user.facade.UserFacade;
 import com.salesmanager.shop.utils.ServiceRequestCriteriaBuilderUtils;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.Principal;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1")
+@Api(tags = {"Merchant and store management resource (Merchant - Store Management Api)"})
+@SwaggerDefinition(tags = {
+    @Tag(name = "Merchant and store management", description = "Edit merchants (retailers) and stores")
+})
 public class MerchantStoreApi {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MerchantStoreApi.class);
@@ -56,19 +51,79 @@ public class MerchantStoreApi {
   @Inject
   private StoreFacade storeFacade;
 
-  @Inject
-  private LanguageService languageService;
 
   @Inject
   private UserFacade userFacade;
 
-  @GetMapping(value = {"/store/{store}"}, produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = {"/store/{code}"}, produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(httpMethod = "GET", value = "Get merchant store", notes = "",
       response = ReadableMerchantStore.class)
-  public ReadableMerchantStore store(@PathVariable String store,
+  public ReadableMerchantStore store(@PathVariable String code,
       @RequestParam(value = "lang", required = false) String lang) {
-    return storeFacade.getByCode(store, lang);
+    return storeFacade.getByCode(code, lang);
   }
+  
+  @GetMapping(value = {"/private/merchant/{code}/stores"}, produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(httpMethod = "GET", value = "Get retailer child stores", notes = "Merchant (retailer) can have multiple stores",
+      response = ReadableMerchantStore.class)
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "lang", dataType = "String", defaultValue = "en")})
+  public ReadableMerchantStoreList stores(
+	  @PathVariable String code,
+      @ApiIgnore Language language,
+      @RequestParam(value = "page", required = false, defaultValue="0") Integer page,
+      @RequestParam(value = "count", required = false, defaultValue="10") Integer count) {
+	  
+	  
+	    String authenticatedUser = userFacade.authenticatedUser();
+	    if (authenticatedUser == null) {
+	      throw new UnauthorizedException();
+	    }
+	    
+	    userFacade.authorizedGroup(authenticatedUser,
+	            Stream.of("SUPERADMIN","ADMIN").collect(Collectors.toList()));
+	  
+    return storeFacade.getChildStores(language, code, page, count);
+  }
+  
+  @ResponseStatus(HttpStatus.OK)
+  @GetMapping(value = {"/private/stores"}, produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(httpMethod = "GET", value = "Get list of stores. Returns all retailers and stores", notes = "",
+      response = ReadableMerchantStore.class)
+  @ApiImplicitParams({
+	    @ApiImplicitParam(name = "lang", dataType = "String", defaultValue = "en")})
+  public ReadableMerchantStoreList get(
+		  @ApiIgnore Language language,
+	      @RequestParam(value = "page", required = false, defaultValue="0") Integer page,
+	      @RequestParam(value = "count", required = false, defaultValue="10") Integer count,
+		  HttpServletRequest request) {
+    
+	   //requires superadmin to see all
+	    String authenticatedUser = userFacade.authenticatedUser();
+	    if (authenticatedUser == null) {
+	      throw new UnauthorizedException();
+	    }
+	    
+	    userFacade.authorizedGroup(authenticatedUser,
+	            Stream.of("SUPERADMIN").collect(Collectors.toList()));
+
+
+	  MerchantStoreCriteria criteria = createMerchantStoreCriteria(page, count, request);
+
+	  return storeFacade.findAll(criteria, language, page, count);
+  }
+  
+  @ResponseStatus(HttpStatus.OK)
+  @GetMapping(value = {"/stores"}, produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(httpMethod = "GET", value = "Get list of store names. Returns all retailers and stores", notes = "",
+      response = ReadableMerchantStore.class)
+  public List<ReadableMerchantStore> get(
+		  HttpServletRequest request) {
+
+	  return storeFacade.getMerchantStoreNames();
+  }
+  
+
 
   @ResponseStatus(HttpStatus.OK)
   @PostMapping(value = {"/private/store"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -115,13 +170,39 @@ public class MerchantStoreApi {
     validateUserPermission(userName, code);
     return storeFacade.getBrand(code);
   }
+  
+  /**
+   * List child stores
+   * @param code
+   * @param request
+   * @return
+   */
+  @ResponseStatus(HttpStatus.OK)
+  @GetMapping(value = {"/private/merchant/{code}/children"},
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiOperation(httpMethod = "GET", value = "Get child stores", notes = "",
+      response = List.class)
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "lang", dataType = "String", defaultValue = "en")})
+  public ReadableMerchantStoreList children(
+      @PathVariable String code,
+      @ApiIgnore Language language,
+      @RequestParam(value = "page", required = false, defaultValue="0") Integer page,
+      @RequestParam(value = "count", required = false, defaultValue="10") Integer count,
+      HttpServletRequest request) {
+    
+    String userName = getUserFromRequest(request);
+    validateUserPermission(userName, code);
+    return storeFacade.getChildStores(language, code, page, count);
+
+  }
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping(value = {"/private/store/{code}/marketing"},
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @ApiOperation(httpMethod = "POST", value = "Create store branding and marketing details",
+  @ApiOperation(httpMethod = "POST", value = "Create or save store branding and marketing details",
       notes = "", response = ReadableBrand.class)
-  public void createStoreMarketing(@PathVariable String code, @RequestBody PersistableBrand brand,
+  public void saveStoreMarketing(@PathVariable String code, @RequestBody PersistableBrand brand,
       HttpServletRequest request) {
     String userName = getUserFromRequest(request);
     validateUserPermission(userName, code);
@@ -196,34 +277,29 @@ public class MerchantStoreApi {
 
 
 
-  @ResponseStatus(HttpStatus.OK)
+/*  @ResponseStatus(HttpStatus.OK)
   @GetMapping(value = {"/private/stores"}, produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiOperation(httpMethod = "GET", value = "Check list of stores", notes = "",
       response = ReadableMerchantStoreList.class)
   public ReadableMerchantStoreList list(
       @RequestParam(value = "start", required = false) Integer start,
       @RequestParam(value = "length", required = false) Integer count,
-      @RequestParam(value = "code", required = false) String code, HttpServletRequest request) {
+      HttpServletRequest request) {
 
     MerchantStoreCriteria criteria = createMerchantStoreCriteria(start, count, request);
-    String drawParam = request.getParameter("draw");
 
-    return storeFacade.getByCriteria(criteria, drawParam, languageService.defaultLanguage());
-  }
+
+    return storeFacade
+    		.getByCriteria(criteria, drawParam, languageService.defaultLanguage());
+  }*/
 
   private MerchantStoreCriteria createMerchantStoreCriteria(Integer start, Integer count,
       HttpServletRequest request) {
     MerchantStoreCriteria criteria = (MerchantStoreCriteria) ServiceRequestCriteriaBuilderUtils
         .buildRequest(MAPPING_FIELDS, request);
 
-    Optional.ofNullable(start).ifPresent(criteria::setStartIndex);
-    Optional.ofNullable(count).ifPresent(criteria::setMaxCount);
-
-    String search = criteria.getSearch();
-    if (!StringUtils.isBlank(search)) {
-      criteria.setCode(search);
-      criteria.setName(search);
-    }
+    
+    
     return criteria;
   }
 
@@ -235,5 +311,11 @@ public class MerchantStoreApi {
     validateUserPermission(userName, code);
     storeFacade.delete(code);
   }
+  
+  private MerchantStoreCriteria filter(HttpServletRequest request) {
+	    Criteria criteria = ServiceRequestCriteriaBuilderUtils.buildRequest(MAPPING_FIELDS, request);
+
+	    return (MerchantStoreCriteria)criteria;
+   }
 
 }

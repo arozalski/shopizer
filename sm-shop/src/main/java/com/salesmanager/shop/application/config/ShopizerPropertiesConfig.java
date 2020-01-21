@@ -2,20 +2,20 @@ package com.salesmanager.shop.application.config;
 
 import com.salesmanager.shop.init.data.InitData;
 import com.salesmanager.shop.init.data.InitStoreData;
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class ShopizerPropertiesConfig {
 
   @Bean
   public List<String> templates() {
-    return Arrays.asList("bootstrap", "generic", "exoticamobilia");
+    return Arrays.asList("bootstrap", "generic", "exoticamobilia", "december");
   }
 
   @Bean

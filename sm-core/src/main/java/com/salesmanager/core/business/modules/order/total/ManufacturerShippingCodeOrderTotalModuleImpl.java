@@ -1,17 +1,5 @@
 package com.salesmanager.core.business.modules.order.total;
 
-import java.math.BigDecimal;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang.Validate;
-import org.drools.KnowledgeBase;
-import org.drools.runtime.StatelessKnowledgeSession;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.salesmanager.core.business.constants.Constants;
 import com.salesmanager.core.business.services.catalog.product.PricingService;
 import com.salesmanager.core.model.catalog.product.Product;
@@ -23,6 +11,11 @@ import com.salesmanager.core.model.order.OrderTotal;
 import com.salesmanager.core.model.order.OrderTotalType;
 import com.salesmanager.core.model.shoppingcart.ShoppingCartItem;
 import com.salesmanager.core.modules.order.total.OrderTotalPostProcessorModule;
+import org.apache.commons.lang.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
 
 
 /**
@@ -42,8 +35,8 @@ public class ManufacturerShippingCodeOrderTotalModuleImpl implements OrderTotalP
 	
 	//private KnowledgeBase kbase;//injected from xml file
 	
-	@Inject
-	KieContainer kieManufacturerBasedPricingContainer;
+	//@Inject
+	//KieContainer kieManufacturerBasedPricingContainer;
 	
 
 	PricingService pricingService;
@@ -79,9 +72,9 @@ public class ManufacturerShippingCodeOrderTotalModuleImpl implements OrderTotalP
 		
 		LOGGER.debug("Setting input parameters " + inputParameters.toString());
 		
-        KieSession kieSession = kieManufacturerBasedPricingContainer.newKieSession();
+/*        KieSession kieSession = kieManufacturerBasedPricingContainer.newKieSession();
         kieSession.insert(inputParameters);
-        kieSession.fireAllRules();
+        kieSession.fireAllRules();*/
 		
 		
 		//orderTotalMethodDecision.execute(inputParameters);

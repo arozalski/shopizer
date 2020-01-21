@@ -6,23 +6,30 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.system.MerchantConfig;
 import com.salesmanager.core.model.system.MerchantConfiguration;
-import com.salesmanager.shop.constants.Constants;
 import com.salesmanager.shop.model.system.Configs;
 import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
-import java.util.Optional;
-import javax.inject.Inject;
+import io.searchbox.strings.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import static com.salesmanager.shop.constants.Constants.KEY_FACEBOOK_PAGE_URL;
-import static com.salesmanager.shop.constants.Constants.KEY_GOOGLE_ANALYTICS_URL;
-import static com.salesmanager.shop.constants.Constants.KEY_INSTAGRAM_URL;
-import static com.salesmanager.shop.constants.Constants.KEY_PINTEREST_PAGE_URL;
+import javax.inject.Inject;
+import java.util.Optional;
+
+import static com.salesmanager.shop.constants.Constants.*;
 
 @Service
 public class MerchantConfigurationFacadeImpl implements MerchantConfigurationFacade {
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(MerchantConfigurationFacadeImpl.class);
+  
   @Inject
   private MerchantConfigurationService merchantConfigurationService;
+  
+  @Value("${config.displayShipping}")
+  private String displayShipping;
 
   @Override
   public Configs getMerchantConfig(MerchantStore merchantStore, Language language) {
@@ -46,6 +53,15 @@ public class MerchantConfigurationFacadeImpl implements MerchantConfigurationFac
 
     Optional<String> pinterestConfigValue = getConfigValue(KEY_PINTEREST_PAGE_URL, merchantStore);
     pinterestConfigValue.ifPresent(readableConfig::setPinterest);
+
+    readableConfig.setDisplayShipping(false);
+    try {
+      if(!StringUtils.isBlank(displayShipping)) {
+        readableConfig.setDisplayShipping(Boolean.valueOf(displayShipping));
+      }
+    } catch(Exception e) {
+      LOGGER.error("Cannot parse value of " + displayShipping);
+    }
 
     return readableConfig;
   }

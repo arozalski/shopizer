@@ -1,18 +1,60 @@
 package com.salesmanager.shop.store.controller.order.facade;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import javax.inject.Inject;
+import com.salesmanager.core.business.constants.Constants;
+import com.salesmanager.core.business.exception.ConversionException;
+import com.salesmanager.core.business.exception.ServiceException;
+import com.salesmanager.core.business.services.catalog.product.PricingService;
+import com.salesmanager.core.business.services.catalog.product.ProductService;
+import com.salesmanager.core.business.services.catalog.product.attribute.ProductAttributeService;
+import com.salesmanager.core.business.services.catalog.product.file.DigitalProductService;
+import com.salesmanager.core.business.services.customer.CustomerService;
+import com.salesmanager.core.business.services.order.OrderService;
+import com.salesmanager.core.business.services.payments.PaymentService;
+import com.salesmanager.core.business.services.reference.currency.CurrencyService;
+import com.salesmanager.core.business.services.shipping.ShippingQuoteService;
+import com.salesmanager.core.business.services.shipping.ShippingService;
+import com.salesmanager.core.business.services.shoppingcart.ShoppingCartService;
+import com.salesmanager.core.business.services.system.EmailService;
+import com.salesmanager.core.business.utils.CoreConfiguration;
+import com.salesmanager.core.business.utils.CreditCardUtils;
+import com.salesmanager.core.model.catalog.product.Product;
+import com.salesmanager.core.model.catalog.product.availability.ProductAvailability;
+import com.salesmanager.core.model.common.Billing;
+import com.salesmanager.core.model.common.Delivery;
+import com.salesmanager.core.model.customer.Customer;
+import com.salesmanager.core.model.merchant.MerchantStore;
+import com.salesmanager.core.model.order.Order;
+import com.salesmanager.core.model.order.*;
+import com.salesmanager.core.model.order.attributes.OrderAttribute;
+import com.salesmanager.core.model.order.orderproduct.OrderProduct;
+import com.salesmanager.core.model.order.orderstatus.OrderStatus;
+import com.salesmanager.core.model.order.orderstatus.OrderStatusHistory;
+import com.salesmanager.core.model.order.payment.CreditCard;
+import com.salesmanager.core.model.payments.*;
+import com.salesmanager.core.model.reference.country.Country;
+import com.salesmanager.core.model.reference.language.Language;
+import com.salesmanager.core.model.shipping.ShippingProduct;
+import com.salesmanager.core.model.shipping.ShippingQuote;
+import com.salesmanager.core.model.shipping.ShippingSummary;
+import com.salesmanager.core.model.shoppingcart.ShoppingCart;
+import com.salesmanager.core.model.shoppingcart.ShoppingCartItem;
+import com.salesmanager.shop.model.customer.PersistableCustomer;
+import com.salesmanager.shop.model.customer.ReadableCustomer;
+import com.salesmanager.shop.model.customer.address.Address;
+import com.salesmanager.shop.model.order.*;
+import com.salesmanager.shop.model.order.total.OrderTotal;
+import com.salesmanager.shop.model.order.transaction.ReadableTransaction;
+import com.salesmanager.shop.populator.customer.CustomerPopulator;
+import com.salesmanager.shop.populator.customer.PersistableCustomerPopulator;
+import com.salesmanager.shop.populator.order.*;
+import com.salesmanager.shop.populator.order.transaction.PersistablePaymentPopulator;
+import com.salesmanager.shop.populator.order.transaction.ReadableTransactionPopulator;
+import com.salesmanager.shop.store.controller.customer.facade.CustomerFacade;
+import com.salesmanager.shop.store.controller.shoppingCart.facade.ShoppingCartFacade;
+import com.salesmanager.shop.utils.EmailTemplatesUtils;
+import com.salesmanager.shop.utils.ImageFilePath;
+import com.salesmanager.shop.utils.LabelUtils;
+import com.salesmanager.shop.utils.LocaleUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
@@ -24,85 +66,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
-import com.salesmanager.core.business.constants.Constants;
-import com.salesmanager.core.business.exception.ConversionException;
-import com.salesmanager.core.business.exception.ServiceException;
-import com.salesmanager.core.business.services.catalog.product.PricingService;
-import com.salesmanager.core.business.services.catalog.product.ProductService;
-import com.salesmanager.core.business.services.catalog.product.attribute.ProductAttributeService;
-import com.salesmanager.core.business.services.catalog.product.file.DigitalProductService;
-import com.salesmanager.core.business.services.customer.CustomerService;
-import com.salesmanager.core.business.services.customer.attribute.CustomerOptionService;
-import com.salesmanager.core.business.services.customer.attribute.CustomerOptionValueService;
-import com.salesmanager.core.business.services.order.OrderService;
-import com.salesmanager.core.business.services.payments.PaymentService;
-import com.salesmanager.core.business.services.reference.country.CountryService;
-import com.salesmanager.core.business.services.reference.currency.CurrencyService;
-import com.salesmanager.core.business.services.reference.language.LanguageService;
-import com.salesmanager.core.business.services.reference.zone.ZoneService;
-import com.salesmanager.core.business.services.shipping.ShippingQuoteService;
-import com.salesmanager.core.business.services.shipping.ShippingService;
-import com.salesmanager.core.business.services.shoppingcart.ShoppingCartService;
-import com.salesmanager.core.business.services.system.EmailService;
-import com.salesmanager.core.business.services.user.GroupService;
-import com.salesmanager.core.business.utils.CoreConfiguration;
-import com.salesmanager.core.business.utils.CreditCardUtils;
-import com.salesmanager.core.model.catalog.product.Product;
-import com.salesmanager.core.model.catalog.product.availability.ProductAvailability;
-import com.salesmanager.core.model.common.Billing;
-import com.salesmanager.core.model.common.Delivery;
-import com.salesmanager.core.model.customer.Customer;
-import com.salesmanager.core.model.merchant.MerchantStore;
-import com.salesmanager.core.model.order.Order;
-import com.salesmanager.core.model.order.OrderCriteria;
-import com.salesmanager.core.model.order.OrderList;
-import com.salesmanager.core.model.order.OrderSummary;
-import com.salesmanager.core.model.order.OrderTotalSummary;
-import com.salesmanager.core.model.order.attributes.OrderAttribute;
-import com.salesmanager.core.model.order.orderproduct.OrderProduct;
-import com.salesmanager.core.model.order.orderstatus.OrderStatus;
-import com.salesmanager.core.model.order.orderstatus.OrderStatusHistory;
-import com.salesmanager.core.model.order.payment.CreditCard;
-import com.salesmanager.core.model.payments.CreditCardPayment;
-import com.salesmanager.core.model.payments.CreditCardType;
-import com.salesmanager.core.model.payments.Payment;
-import com.salesmanager.core.model.payments.PaymentType;
-import com.salesmanager.core.model.payments.Transaction;
-import com.salesmanager.core.model.reference.country.Country;
-import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.core.model.shipping.ShippingProduct;
-import com.salesmanager.core.model.shipping.ShippingQuote;
-import com.salesmanager.core.model.shipping.ShippingSummary;
-import com.salesmanager.core.model.shoppingcart.ShoppingCart;
-import com.salesmanager.core.model.shoppingcart.ShoppingCartItem;
-import com.salesmanager.shop.model.customer.PersistableCustomer;
-import com.salesmanager.shop.model.customer.ReadableCustomer;
-import com.salesmanager.shop.model.customer.address.Address;
-import com.salesmanager.shop.model.order.OrderEntity;
-import com.salesmanager.shop.model.order.PersistableOrder;
-import com.salesmanager.shop.model.order.PersistableOrderApi;
-import com.salesmanager.shop.model.order.PersistableOrderProduct;
-import com.salesmanager.shop.model.order.ReadableOrder;
-import com.salesmanager.shop.model.order.ReadableOrderList;
-import com.salesmanager.shop.model.order.ReadableOrderProduct;
-import com.salesmanager.shop.model.order.ShopOrder;
-import com.salesmanager.shop.model.order.total.OrderTotal;
-import com.salesmanager.shop.model.order.transaction.ReadableTransaction;
-import com.salesmanager.shop.populator.customer.CustomerPopulator;
-import com.salesmanager.shop.populator.customer.PersistableCustomerPopulator;
-import com.salesmanager.shop.populator.order.OrderProductPopulator;
-import com.salesmanager.shop.populator.order.PersistableOrderApiPopulator;
-import com.salesmanager.shop.populator.order.ReadableOrderPopulator;
-import com.salesmanager.shop.populator.order.ReadableOrderProductPopulator;
-import com.salesmanager.shop.populator.order.ShoppingCartItemPopulator;
-import com.salesmanager.shop.populator.order.transaction.PersistablePaymentPopulator;
-import com.salesmanager.shop.populator.order.transaction.ReadableTransactionPopulator;
-import com.salesmanager.shop.store.controller.customer.facade.CustomerFacade;
-import com.salesmanager.shop.store.controller.shoppingCart.facade.ShoppingCartFacade;
-import com.salesmanager.shop.utils.EmailTemplatesUtils;
-import com.salesmanager.shop.utils.ImageFilePath;
-import com.salesmanager.shop.utils.LabelUtils;
-import com.salesmanager.shop.utils.LocaleUtils;
+
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service("orderFacade")
 public class OrderFacadeImpl implements OrderFacade {
@@ -139,6 +106,8 @@ public class OrderFacadeImpl implements OrderFacade {
 	private CoreConfiguration coreConfiguration;
 	@Inject
 	private PaymentService paymentService;
+	@Autowired
+	private PersistableOrderApiPopulator persistableOrderApiPopulator;
 
 	
 	@Autowired
@@ -921,9 +890,9 @@ public class OrderFacadeImpl implements OrderFacade {
         returnList.setRecordsFiltered(orderList.getTotalCount());
         returnList.setRecordsTotal(orderList.getTotalCount());
 
-        if (StringUtils.isNotEmpty(draw)) {
+/*        if (StringUtils.isNotEmpty(draw)) {
             returnList.setDraw(Integer.parseInt(draw));
-        }
+        }*/
         return returnList;
 
 	}
@@ -1162,19 +1131,12 @@ public class OrderFacadeImpl implements OrderFacade {
 	public Order processOrder(PersistableOrderApi order, Customer customer, MerchantStore store, Language language, Locale locale)
 			throws ServiceException {
 
-		PersistableOrderApiPopulator populator = new PersistableOrderApiPopulator();
-		populator.setCurrencyService(currencyService);
-		populator.setCustomerService(customerService);
-		populator.setDigitalProductService(digitalProductService);
-		populator.setProductAttributeService(productAttributeService);
-		populator.setProductService(productService);
-		populator.setShoppingCartService(shoppingCartService);
 		
 		
 		try {
 			
 			Order modelOrder = new Order();
-			populator.populate(order, modelOrder,store, language);
+			persistableOrderApiPopulator.populate(order, modelOrder,store, language);
 			
 			Long shoppingCartId = order.getShoppingCartId();
 			ShoppingCart cart = shoppingCartService.getById(shoppingCartId, store);
@@ -1303,7 +1265,9 @@ public class OrderFacadeImpl implements OrderFacade {
 			return modelOrder;
 			
 		} catch(Exception e) {
-			throw new ServiceException(e);
+	
+		      throw new ServiceException(e);
+
 		}
 
 	}

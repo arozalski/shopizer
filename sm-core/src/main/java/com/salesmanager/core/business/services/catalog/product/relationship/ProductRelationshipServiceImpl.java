@@ -1,11 +1,5 @@
 package com.salesmanager.core.business.services.catalog.product.relationship;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.springframework.stereotype.Service;
-
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.repositories.catalog.product.relationship.ProductRelationshipRepository;
 import com.salesmanager.core.business.services.common.generic.SalesManagerEntityServiceImpl;
@@ -14,6 +8,10 @@ import com.salesmanager.core.model.catalog.product.relationship.ProductRelations
 import com.salesmanager.core.model.catalog.product.relationship.ProductRelationshipType;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.util.List;
 
 @Service("productRelationshipService")
 public class ProductRelationshipServiceImpl extends
@@ -68,7 +66,7 @@ public class ProductRelationshipServiceImpl extends
 	
 	@Override
 	public void deactivateGroup(MerchantStore store, String groupName) throws ServiceException {
-		List<ProductRelationship> entities = productRelationshipRepository.getByGroup(store, groupName);
+		List<ProductRelationship> entities = getGroupDefinition(store, groupName);
 		for(ProductRelationship relation : entities) {
 			relation.setActive(false);
 			this.saveOrUpdate(relation);
@@ -77,18 +75,21 @@ public class ProductRelationshipServiceImpl extends
 	
 	@Override
 	public void activateGroup(MerchantStore store, String groupName) throws ServiceException {
-		List<ProductRelationship> entities = this.getByGroup(store, groupName);
+		List<ProductRelationship> entities = getGroupDefinition(store, groupName);
 		for(ProductRelationship relation : entities) {
 			relation.setActive(true);
 			this.saveOrUpdate(relation);
 		}
 	}
 	
-	public void delete(ProductRelationship relationship) throws ServiceException {
+	public void deleteRelationship(ProductRelationship relationship)  throws ServiceException {
 		
 		//throws detached exception so need to query first
 		relationship = this.getById(relationship.getId());
-		super.delete(relationship);
+		if(relationship != null) {
+			delete(relationship);
+		}
+		
 		
 		
 	}
@@ -141,6 +142,17 @@ public class ProductRelationshipServiceImpl extends
 		return productRelationshipRepository.getByType(store, type.name(), product);
 				
 		
+	}
+
+	@Override
+	public List<ProductRelationship> getGroupDefinition(MerchantStore store, String name) {
+		return productRelationshipRepository.getByGroup(store, name);
+	}
+
+	@Override
+	public List<ProductRelationship> getByType(MerchantStore store, Product product, String name)
+			throws ServiceException {
+		return productRelationshipRepository.getByType(store, name, product);
 	}
 
 

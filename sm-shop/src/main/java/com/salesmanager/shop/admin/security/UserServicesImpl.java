@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -124,7 +123,7 @@ public class UserServicesImpl implements WebUserServices{
 		  List<Group> groups = groupService.listGroup(GroupType.ADMIN);
 		  
 		  //creation of the super admin admin:password)
-		  com.salesmanager.core.model.user.User user = new com.salesmanager.core.model.user.User("admin",password,"admin@shopizer.com");
+		  com.salesmanager.core.model.user.User user = new com.salesmanager.core.model.user.User("admin@shopizer.com",password,"admin@shopizer.com");
 		  user.setFirstName("Administrator");
 		  user.setLastName("User");
 		  

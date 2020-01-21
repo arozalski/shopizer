@@ -1,5 +1,7 @@
 package com.salesmanager.shop.model.catalog.product.attribute;
 
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionValueEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class ReadableProductOption extends ProductOption {
 	
 	private String name;
 	private String lang;
-	private List<ReadableProductOptionValue> optionValues = new ArrayList<ReadableProductOptionValue>();
+	private List<ReadableProductOptionValueEntity> optionValues = new ArrayList<ReadableProductOptionValueEntity>();
 
 
 	public String getName() {
@@ -31,11 +33,11 @@ public class ReadableProductOption extends ProductOption {
 		this.lang = lang;
 	}
 
-	public List<ReadableProductOptionValue> getOptionValues() {
+	public List<ReadableProductOptionValueEntity> getOptionValues() {
 		return optionValues;
 	}
 
-	public void setOptionValues(List<ReadableProductOptionValue> optionValues) {
+	public void setOptionValues(List<ReadableProductOptionValueEntity> optionValues) {
 		this.optionValues = optionValues;
 	}
 

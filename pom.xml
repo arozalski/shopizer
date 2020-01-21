@@ -6,7 +6,7 @@
 
 	<groupId>com.shopizer</groupId>
 	<artifactId>shopizer</artifactId>
-	<version>2.7.0</version>
+	<version>2.9.0</version>
 	<packaging>pom</packaging>
 
 	<name>shopizer</name>
@@ -23,15 +23,17 @@
 		<java.version>1.8</java.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<shopizer.version>2.7.0</shopizer.version>
-		<shopizer.search.version>2.7.0</shopizer.search.version>
-		<shopizer-canadapost.version>2.7.0</shopizer-canadapost.version>
-		<shopizer-shipping-distance.version>2.7.0</shopizer-shipping-distance.version>
+		<shopizer.version>2.9.0</shopizer.version>
+		<shopizer.search.version>2.8.0</shopizer.search.version>
+		<shopizer-canadapost.version>2.8.0</shopizer-canadapost.version>
+		<!--<shopizer-shipping-distance.version>2.8.2</shopizer-shipping-distance.version>-->
 		<org.elasticsearch-version>6.3.1</org.elasticsearch-version>
 		<io.searchbox.jest-version>6.3.1</io.searchbox.jest-version>
-		<spring-vault-core-version>1.1.2.RELEASE</spring-vault-core-version>
+		<!-- requires spring 5 -->
+		<!-- <spring-vault-core-version>2.1.3.RELEASE</spring-vault-core-version> -->
 		<commons-collections4.version>4.0</commons-collections4.version>
 		<commons-validator.version>1.5.1</commons-validator.version>
+		<commons-lang.version>3.5</commons-lang.version>
 		<org.apache.httpcomponent.version>4.5.2</org.apache.httpcomponent.version>
 		<javax.inject.version>1</javax.inject.version>
 		<javax.el.version>2.2.4</javax.el.version>
@@ -41,22 +43,21 @@
 		<infinispan.version>6.0.2.Final</infinispan.version>
 		<mysql-jdbc-version>5.1.47</mysql-jdbc-version>
 		<simple-json-version>1.1.1</simple-json-version>
-		<jackson-version-databind>2.9.9.2</jackson-version-databind>
+		<jackson-version-databind>2.9.10.1</jackson-version-databind>
 		<jackson-version>2.9.9</jackson-version>
 		<!-- jacoco coverage -->
 		<coverage.lines>.32</coverage.lines>
 		<coverage.branches>.37</coverage.branches>
-		<!-- api documentation -->
-		<swagger.version>2.9.2</swagger.version>
 	</properties>
 
 	<dependencies>
 
-		<dependency>
+	<!-- Requires Spring 5 -->
+<!-- 		<dependency>
 			<groupId>org.springframework.vault</groupId>
 			<artifactId>spring-vault-core</artifactId>
 			<version>${spring-vault-core-version}</version>
-		</dependency>
+		</dependency> -->
 
 
 		<!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
@@ -75,7 +76,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.5</version>
+			<version>${commons-lang.version}</version>
 		</dependency>
 
 
@@ -153,6 +154,12 @@
 			</exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>io.searchbox</groupId>
+			<artifactId>jest</artifactId>
+			<version>${io.searchbox.jest-version}</version>
+		</dependency>
+
 		<!-- Elastic search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
@@ -166,24 +173,9 @@
 			<version>${mysql-jdbc-version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>io.searchbox</groupId>
-			<artifactId>jest</artifactId>
-			<version>${io.searchbox.jest-version}</version>
-		</dependency>
-		
-		<!-- Swagger 2 documentation -->		
-		<dependency>
-		    <groupId>io.springfox</groupId>
-		    <artifactId>springfox-swagger2</artifactId>
-		    <version>${swagger.version}</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>io.springfox</groupId>
-		    <artifactId>springfox-swagger-ui</artifactId>
-		    <version>${swagger.version}</version>
-		</dependency>
+
+
+
 
 	</dependencies>
 
@@ -242,8 +234,6 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.3</version>
-				<configuration>
-				</configuration>
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>

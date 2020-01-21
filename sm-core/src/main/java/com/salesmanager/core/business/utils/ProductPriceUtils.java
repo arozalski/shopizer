@@ -1,24 +1,5 @@
 package com.salesmanager.core.business.utils;
 
-import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.validator.routines.BigDecimalValidator;
-import org.apache.commons.validator.routines.CurrencyValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
 import com.salesmanager.core.business.constants.Constants;
 import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.catalog.product.attribute.ProductAttribute;
@@ -27,6 +8,19 @@ import com.salesmanager.core.model.catalog.product.price.FinalPrice;
 import com.salesmanager.core.model.catalog.product.price.ProductPrice;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.order.orderproduct.OrderProduct;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.validator.routines.BigDecimalValidator;
+import org.apache.commons.validator.routines.CurrencyValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -505,7 +499,7 @@ public class ProductPriceUtils {
 
 		Set<ProductAvailability> availabilities = product.getAvailabilities();
 		for(ProductAvailability availability : availabilities) {
-			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {//TODO REL 2.1 accept a region
+			if(!StringUtils.isEmpty(availability.getRegion()) && availability.getRegion().equals(Constants.ALL_REGIONS)) {//TODO REL 2.1 accept a region
 				Set<ProductPrice> prices = availability.getPrices();
 				for(ProductPrice price : prices) {
 					

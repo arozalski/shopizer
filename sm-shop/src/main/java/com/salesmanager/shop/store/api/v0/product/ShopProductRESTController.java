@@ -27,7 +27,6 @@ import com.salesmanager.shop.populator.catalog.PersistableProductOptionValuePopu
 import com.salesmanager.shop.populator.catalog.PersistableProductReviewPopulator;
 import com.salesmanager.shop.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.shop.populator.manufacturer.PersistableManufacturerPopulator;
-import com.salesmanager.shop.store.controller.items.facade.ProductItemsFacade;
 import com.salesmanager.shop.store.controller.product.facade.ProductFacade;
 import com.salesmanager.shop.store.model.filter.QueryFilter;
 import com.salesmanager.shop.store.model.filter.QueryFilterType;
@@ -649,7 +648,7 @@ public class ShopProductRESTController {
 				
 			}
 			
-			productList.setTotalCount(products.getTotalCount());
+			productList.setTotalPages(products.getTotalCount());
 			
 			
 			return productList;

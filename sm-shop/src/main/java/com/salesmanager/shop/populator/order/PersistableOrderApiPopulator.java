@@ -1,21 +1,8 @@
 package com.salesmanager.shop.populator.order;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang3.StringUtils;
-
 import com.salesmanager.core.business.exception.ConversionException;
-import com.salesmanager.core.business.services.catalog.product.ProductService;
-import com.salesmanager.core.business.services.catalog.product.attribute.ProductAttributeService;
-import com.salesmanager.core.business.services.catalog.product.file.DigitalProductService;
 import com.salesmanager.core.business.services.customer.CustomerService;
-import com.salesmanager.core.business.services.order.OrderService;
 import com.salesmanager.core.business.services.reference.currency.CurrencyService;
-import com.salesmanager.core.business.services.shoppingcart.ShoppingCartService;
 import com.salesmanager.core.business.utils.AbstractDataPopulator;
 import com.salesmanager.core.model.common.Billing;
 import com.salesmanager.core.model.common.Delivery;
@@ -29,18 +16,40 @@ import com.salesmanager.core.model.order.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.model.payments.PaymentType;
 import com.salesmanager.core.model.reference.currency.Currency;
 import com.salesmanager.core.model.reference.language.Language;
+import com.salesmanager.shop.model.customer.PersistableCustomer;
+import com.salesmanager.shop.model.order.PersistableAnonymousOrderApi;
 import com.salesmanager.shop.model.order.PersistableOrderApi;
+import com.salesmanager.shop.populator.customer.CustomerPopulator;
 import com.salesmanager.shop.utils.LocaleUtils;
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+@Component
 public class PersistableOrderApiPopulator extends AbstractDataPopulator<PersistableOrderApi, Order> {
 
-	
+	@Autowired
 	private CurrencyService currencyService;
+	@Autowired
 	private CustomerService customerService;
+/*	@Autowired
 	private ShoppingCartService shoppingCartService;
+	@Autowired
 	private ProductService productService;
+	@Autowired
 	private ProductAttributeService productAttributeService;
-	private DigitalProductService digitalProductService;
+	@Autowired
+	private DigitalProductService digitalProductService;*/
+	@Autowired
+	private CustomerPopulator customerPopulator;
+	
+	
 
 	
 
@@ -50,12 +59,12 @@ public class PersistableOrderApiPopulator extends AbstractDataPopulator<Persista
 			throws ConversionException {
 		
 
-		Validate.notNull(currencyService,"currencyService must be set");
+/*		Validate.notNull(currencyService,"currencyService must be set");
 		Validate.notNull(customerService,"customerService must be set");
 		Validate.notNull(shoppingCartService,"shoppingCartService must be set");
 		Validate.notNull(productService,"productService must be set");
 		Validate.notNull(productAttributeService,"productAttributeService must be set");
-		Validate.notNull(digitalProductService,"digitalProductService must be set");
+		Validate.notNull(digitalProductService,"digitalProductService must be set");*/
 		Validate.notNull(source.getPayment(),"Payment cannot be null");
 		
 		try {
@@ -81,14 +90,27 @@ public class PersistableOrderApiPopulator extends AbstractDataPopulator<Persista
 			}
 			
 			//Customer
-			Long customerId = source.getCustomerId();
-			Customer customer = customerService.getById(customerId);
-			
-			if(customer == null) {
+			Customer customer = null;
+			if(source.getCustomerId() != null && source.getCustomerId().longValue() >0) {
+			  Long customerId = source.getCustomerId();
+			  customer = customerService.getById(customerId);
+
+			  if(customer == null) {
 				throw new ConversionException("Curstomer with id " + source.getCustomerId() + " does not exist");
+			  }
+			  target.setCustomerId(customerId);
+			
+			} else {
+			  if(source instanceof PersistableAnonymousOrderApi) {
+			    PersistableCustomer persistableCustomer = ((PersistableAnonymousOrderApi)source).getCustomer();
+			    customer = new Customer();
+			    customer = customerPopulator.populate(persistableCustomer, customer, store, language);
+			  } else {
+			    throw new ConversionException("Curstomer details or id not set in request");
+			  } 
 			}
 			
-			target.setCustomerId(customerId);
+			
 			target.setCustomerEmailAddress(customer.getEmailAddress());
 			
 			Delivery delivery = customer.getDelivery();
@@ -145,7 +167,7 @@ public class PersistableOrderApiPopulator extends AbstractDataPopulator<Persista
 	}
 
 
-	public CurrencyService getCurrencyService() {
+/*	public CurrencyService getCurrencyService() {
 		return currencyService;
 	}
 
@@ -191,7 +213,7 @@ public class PersistableOrderApiPopulator extends AbstractDataPopulator<Persista
 
 	public void setDigitalProductService(DigitalProductService digitalProductService) {
 		this.digitalProductService = digitalProductService;
-	}
+	}*/
 
 
 

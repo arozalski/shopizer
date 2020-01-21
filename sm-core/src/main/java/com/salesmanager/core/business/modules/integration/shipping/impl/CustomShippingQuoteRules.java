@@ -1,36 +1,27 @@
 package com.salesmanager.core.business.modules.integration.shipping.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.drools.KnowledgeBase;
-import org.drools.runtime.StatelessKnowledgeSession;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.salesmanager.core.business.configuration.DroolsBeanFactory;
 import com.salesmanager.core.model.common.Delivery;
 import com.salesmanager.core.model.merchant.MerchantStore;
-import com.salesmanager.core.model.shipping.PackageDetails;
-import com.salesmanager.core.model.shipping.ShippingConfiguration;
-import com.salesmanager.core.model.shipping.ShippingOption;
-import com.salesmanager.core.model.shipping.ShippingOrigin;
-import com.salesmanager.core.model.shipping.ShippingQuote;
+import com.salesmanager.core.model.shipping.*;
 import com.salesmanager.core.model.system.CustomIntegrationConfiguration;
 import com.salesmanager.core.model.system.IntegrationConfiguration;
 import com.salesmanager.core.model.system.IntegrationModule;
 import com.salesmanager.core.modules.constants.Constants;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.io.ResourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 
 public class CustomShippingQuoteRules implements ShippingQuoteModule {
@@ -44,8 +35,8 @@ public class CustomShippingQuoteRules implements ShippingQuoteModule {
 	
 	//private KnowledgeBase kbase;
 	
-	@Inject
-	KieContainer kieShippingCustomContainer;
+	//@Inject
+	//KieContainer kieShippingCustomContainer;
 
 	@Override
 	public void validateModuleConfiguration(
@@ -148,18 +139,22 @@ public class CustomShippingQuoteRules implements ShippingQuoteModule {
 		
 		LOGGER.debug("Setting input parameters " + inputParameters.toString());
 		
-        KieSession kieSession = kieShippingCustomContainer.newKieSession();
-        kieSession.insert(inputParameters);
-        kieSession.fireAllRules();
 		
-		//shippingPriceRule.execute(Arrays.asList(new Object[] { inputParameters }));
+		KieSession kieSession=new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com/salesmanager/drools/rules/PriceByDistance.drl"));
+		
+		DecisionResponse resp = new DecisionResponse();
+		
+        kieSession.insert(inputParameters);
+        kieSession.setGlobal("decision",resp);
+        kieSession.fireAllRules();
+        //System.out.println(resp.getCustomPrice());
 
-		if(inputParameters.getPriceQuote() != null) {
+		if(resp.getCustomPrice() != null) {
 
 			ShippingOption shippingOption = new ShippingOption();
 			
 			
-			shippingOption.setOptionPrice(new BigDecimal(inputParameters.getPriceQuote()));
+			shippingOption.setOptionPrice(new BigDecimal(resp.getCustomPrice()));
 			shippingOption.setShippingModuleCode(MODULE_CODE);
 			shippingOption.setOptionCode(MODULE_CODE);
 			shippingOption.setOptionId(MODULE_CODE);

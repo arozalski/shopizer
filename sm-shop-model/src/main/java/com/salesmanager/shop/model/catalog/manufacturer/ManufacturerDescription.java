@@ -1,11 +1,11 @@
 package com.salesmanager.shop.model.catalog.manufacturer;
 
+import com.salesmanager.shop.model.catalog.NamedEntity;
+
 import java.io.Serializable;
 
-import com.salesmanager.shop.model.catalog.CatalogEntity;
 
-
-public class ManufacturerDescription extends CatalogEntity implements
+public class ManufacturerDescription extends NamedEntity implements
 		Serializable {
 
 	/**

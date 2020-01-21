@@ -1,7 +1,5 @@
 package com.salesmanager.core.business.services.catalog.product.relationship;
 
-import java.util.List;
-
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.common.generic.SalesManagerEntityService;
 import com.salesmanager.core.model.catalog.product.Product;
@@ -9,6 +7,8 @@ import com.salesmanager.core.model.catalog.product.relationship.ProductRelations
 import com.salesmanager.core.model.catalog.product.relationship.ProductRelationshipType;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
+
+import java.util.List;
 
 public interface ProductRelationshipService extends
 		SalesManagerEntityService<Long, ProductRelationship> {
@@ -27,6 +27,17 @@ public interface ProductRelationshipService extends
 	 */
 	List<ProductRelationship> getByType(MerchantStore store, Product product,
 			ProductRelationshipType type, Language language) throws ServiceException;
+	
+	/**
+	 * Find by product and group name
+	 * @param store
+	 * @param product
+	 * @param name
+	 * @return
+	 * @throws ServiceException
+	 */
+	List<ProductRelationship> getByType(MerchantStore store, Product product,
+			String name) throws ServiceException;
 
 	/**
 	 * Get product relationship List for a given type (RELATED, FEATURED...) and a given base product
@@ -63,6 +74,14 @@ public interface ProductRelationshipService extends
 	 * @return
 	 */
 	List<ProductRelationship> getGroups(MerchantStore store);
+	
+	/**
+	 * Get group by store and group name (code)
+	 * @param store
+	 * @param name
+	 * @return
+	 */
+	List<ProductRelationship> getGroupDefinition(MerchantStore store, String name);
 
 	/**
 	 * Creates a product group
@@ -79,6 +98,8 @@ public interface ProductRelationshipService extends
 
 	void deactivateGroup(MerchantStore store, String groupName)
 			throws ServiceException;
+	
+	void deleteRelationship(ProductRelationship relationship) throws ServiceException;
 
 	void activateGroup(MerchantStore store, String groupName)
 			throws ServiceException;

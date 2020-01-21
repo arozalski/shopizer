@@ -2,24 +2,23 @@ package com.salesmanager.shop.store.controller.marketplace.facade;
 
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.exception.ServiceException;
-import com.salesmanager.shop.store.api.exception.ConversionRuntimeException;
-import com.salesmanager.shop.store.api.exception.ResourceNotFoundException;
-import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
-import java.util.Optional;
-import javax.inject.Inject;
-
-import org.springframework.stereotype.Component;
-
 import com.salesmanager.core.business.services.system.optin.OptinService;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.system.optin.Optin;
 import com.salesmanager.core.model.system.optin.OptinType;
 import com.salesmanager.shop.model.marketplace.ReadableMarketPlace;
-import com.salesmanager.shop.model.shop.ReadableMerchantStore;
+import com.salesmanager.shop.model.store.ReadableMerchantStore;
 import com.salesmanager.shop.model.system.ReadableOptin;
 import com.salesmanager.shop.populator.system.ReadableOptinPopulator;
+import com.salesmanager.shop.store.api.exception.ConversionRuntimeException;
+import com.salesmanager.shop.store.api.exception.ResourceNotFoundException;
+import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
 import com.salesmanager.shop.store.controller.store.facade.StoreFacade;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.util.Optional;
 
 @Component
 public class MarketPlaceFacadeImpl implements MarketPlaceFacade {

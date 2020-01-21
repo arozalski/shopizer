@@ -1,5 +1,7 @@
 package com.salesmanager.shop.model.catalog.product.attribute;
 
+import com.salesmanager.shop.model.catalog.product.attribute.api.ProductOptionValueEntity;
+
 import java.io.Serializable;
 import java.util.List;
 

@@ -1,14 +1,21 @@
 package com.salesmanager.core.business.services.user;
 
-import java.util.List;
-import javax.inject.Inject;
 import com.salesmanager.core.business.exception.ServiceException;
+import com.salesmanager.core.business.repositories.user.PageableUserRepository;
 import com.salesmanager.core.business.repositories.user.UserRepository;
 import com.salesmanager.core.business.services.common.generic.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.model.common.Criteria;
 import com.salesmanager.core.model.common.GenericEntityList;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.user.User;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import javax.inject.Inject;
+import java.util.List;
 
 
 
@@ -17,6 +24,9 @@ public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 
 
   private UserRepository userRepository;
+  
+  @Autowired
+  private PageableUserRepository pageableUserRepository;
 
   @Inject
   public UserServiceImpl(UserRepository userRepository) {
@@ -81,5 +91,24 @@ public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
   public User getByUserName(String userName, String storeCode) throws ServiceException {
     return userRepository.findByUserName(userName, storeCode);
   }
+
+
+@Override
+public Page<User> listByCriteria(Criteria criteria, int page, int count) throws ServiceException {
+	
+	Pageable pageRequest = new PageRequest(page, count);
+	Page<User> users = null;
+	if(StringUtils.isBlank(criteria.getStoreCode())) {
+		
+		users = pageableUserRepository.listAll(criteria.getUser(), pageRequest);
+	} else {
+
+		users = pageableUserRepository.listByStore(criteria.getStoreCode(), criteria.getUser(), pageRequest);
+	}
+	
+	
+	return users;
+}
+
 
 }

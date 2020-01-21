@@ -1,26 +1,5 @@
 package com.salesmanager.shop.store.api.v1.product;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import com.salesmanager.core.business.services.catalog.category.CategoryService;
 import com.salesmanager.core.business.services.catalog.product.ProductService;
 import com.salesmanager.core.model.catalog.category.Category;
@@ -32,11 +11,31 @@ import com.salesmanager.shop.model.catalog.product.LightPersistableProduct;
 import com.salesmanager.shop.model.catalog.product.PersistableProduct;
 import com.salesmanager.shop.model.catalog.product.ReadableProduct;
 import com.salesmanager.shop.model.catalog.product.ReadableProductList;
+import com.salesmanager.shop.model.entity.EntityExists;
+import com.salesmanager.shop.store.api.exception.ResourceNotFoundException;
+import com.salesmanager.shop.store.api.exception.UnauthorizedException;
 import com.salesmanager.shop.store.controller.product.facade.ProductFacade;
 import com.salesmanager.shop.utils.ImageFilePath;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.*;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * API to create, read, update and delete a Product API to create Manufacturer
@@ -45,6 +44,10 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @Controller
 @RequestMapping("/api/v1")
+@Api(tags = {"Product management resource (Product Management Api)"})
+@SwaggerDefinition(tags = {
+    @Tag(name = "Product management resource", description = "Add product, edit product and delete product")
+})
 public class ProductApi {
 
 
@@ -82,12 +85,14 @@ public class ProductApi {
 
   @ResponseStatus(HttpStatus.OK)
   @RequestMapping(
-      value = {"/private/product/{id}", "/auth/products/{id}"},
+      value = {"/private/product/{id}", "/auth/product/{id}"},
       method = RequestMethod.PUT)
   @ApiImplicitParams({
       @ApiImplicitParam(name = "store", dataType = "String", defaultValue = "DEFAULT"),
       @ApiImplicitParam(name = "lang", dataType = "String", defaultValue = "en")
   })
+  @ApiOperation(httpMethod = "PUT", value = "Update product",
+  notes = "", produces = "application/json", response = PersistableProduct.class)
   public @ResponseBody PersistableProduct update(
       @PathVariable Long id,
       @Valid @RequestBody PersistableProduct product,
@@ -96,6 +101,7 @@ public class ProductApi {
       HttpServletResponse response) {
 
     try {
+      product.setId(id);
       productFacade.saveProduct(merchantStore, product, merchantStore.getDefaultLanguage());
       return product;
     } catch (Exception e) {
@@ -108,11 +114,13 @@ public class ProductApi {
       return null;
     }
   }
-  
+  /** updates price quantity **/
   @ResponseStatus(HttpStatus.OK)
   @PatchMapping(
       value = "/private/product/{id}",
       produces = {APPLICATION_JSON_VALUE})
+  @ApiOperation(httpMethod = "PATCH", value = "Update product inventory",
+  notes = "Updates product inventory", produces = "application/json", response = Void.class)
   @ApiImplicitParams({
       @ApiImplicitParam(name = "store", dataType = "string", defaultValue = "DEFAULT"),
       @ApiImplicitParam(name = "lang", dataType = "string", defaultValue = "en")
@@ -129,25 +137,15 @@ public class ProductApi {
 
   @ResponseStatus(HttpStatus.OK)
   @RequestMapping(
-      value = {"/private/product/{id}", "/auth/products/{id}"},
+      value = {"/private/product/{id}", "/auth/product/{id}"},
       method = RequestMethod.DELETE)
+	@ApiImplicitParams({ @ApiImplicitParam(name = "store", dataType = "String", defaultValue = "DEFAULT"),
+		@ApiImplicitParam(name = "lang", dataType = "String", defaultValue = "en") })
   public void delete(
-      @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
+      @PathVariable Long id, 
+      @ApiIgnore MerchantStore merchantStore, @ApiIgnore Language language) {
 
-    try {
-      Product product = productService.getById(id);
-      if (product != null) {
-        productFacade.deleteProduct(product);
-      } else {
-        response.sendError(404, "No Product found for ID : " + id);
-      }
-    } catch (Exception e) {
-      LOGGER.error("Error while deleting product", e);
-      try {
-        response.sendError(503, "Error while deleting product " + e.getMessage());
-      } catch (Exception ignore) {
-      }
-    }
+	  productFacade.deleteProduct(id, merchantStore);
   }
 
   /**
@@ -457,6 +455,23 @@ public class ProductApi {
 
     return product;
   }
+  
+  @ResponseStatus(HttpStatus.OK)
+  @GetMapping(value = {"/private/product/unique"}, produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "store", dataType = "string", defaultValue = "DEFAULT")
+  })
+  @ApiOperation(httpMethod = "GET", value = "Check if product code already exists", notes = "",
+      response = EntityExists.class)
+  public ResponseEntity<EntityExists> exists(
+      @RequestParam(value = "code") String code,
+      @ApiIgnore MerchantStore merchantStore, 
+      @ApiIgnore Language language) {
+    
+    boolean exists = productFacade.exists(code, merchantStore);
+    return new ResponseEntity<EntityExists>(new EntityExists(exists), HttpStatus.OK);
+    
+  }
 
   @ResponseStatus(HttpStatus.CREATED)
   @RequestMapping(
@@ -480,7 +495,26 @@ public class ProductApi {
     try {
       // get the product
       Product product = productService.getById(productId);
+      
+      if(product == null) {
+    	  throw new ResourceNotFoundException("Product id [" + productId + "] is not found");
+      }
+      
+      if(product.getMerchantStore().getId().intValue() != merchantStore.getId().intValue()) {
+    	  throw new UnauthorizedException("Product id [" + productId + "] does not belong to store [" + merchantStore.getCode() + "]");
+      }
+
       Category category = categoryService.getById(categoryId);
+      
+      if(category == null) {
+    	  throw new ResourceNotFoundException("Category id [" + categoryId + "] is not found");
+      }
+      
+      if(category.getMerchantStore().getId().intValue() != merchantStore.getId().intValue()) {
+    	  throw new UnauthorizedException("Category id [" + categoryId + "] does not belong to store [" + merchantStore.getCode() + "]");
+      }
+      
+      
       return productFacade.addProductToCategory(category, product, language);
 
     } catch (Exception e) {
@@ -513,9 +547,26 @@ public class ProductApi {
       HttpServletResponse response) {
 
     try {
-      // get the product
-      Product product = productService.getById(productId);
-      Category category = categoryService.getById(categoryId);
+        Product product = productService.getById(productId);
+        
+        if(product == null) {
+      	  throw new ResourceNotFoundException("Product id [" + productId + "] is not found");
+        }
+        
+        if(product.getMerchantStore().getId().intValue() != merchantStore.getId().intValue()) {
+      	  throw new UnauthorizedException("Product id [" + productId + "] does not belong to store [" + merchantStore.getCode() + "]");
+        }
+
+        Category category = categoryService.getById(categoryId);
+        
+        if(category == null) {
+      	  throw new ResourceNotFoundException("Category id [" + categoryId + "] is not found");
+        }
+        
+        if(category.getMerchantStore().getId().intValue() != merchantStore.getId().intValue()) {
+      	  throw new UnauthorizedException("Category id [" + categoryId + "] does not belong to store [" + merchantStore.getCode() + "]");
+        }
+      
       return productFacade.removeProductFromCategory(category, product, language);
 
     } catch (Exception e) {

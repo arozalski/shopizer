@@ -1,18 +1,22 @@
 package com.salesmanager.core.business.services.catalog.product.attribute;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.springframework.stereotype.Service;
-
 import com.salesmanager.core.business.exception.ServiceException;
+import com.salesmanager.core.business.repositories.catalog.product.attribute.PageableProductOptionValueRepository;
 import com.salesmanager.core.business.repositories.catalog.product.attribute.ProductOptionValueRepository;
 import com.salesmanager.core.business.services.common.generic.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.model.catalog.product.attribute.ProductAttribute;
 import com.salesmanager.core.model.catalog.product.attribute.ProductOptionValue;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
+import org.apache.commons.lang3.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.util.List;
 
 @Service("productOptionValueService")
 public class ProductOptionValueServiceImpl extends
@@ -21,6 +25,9 @@ public class ProductOptionValueServiceImpl extends
 
 	@Inject
 	private ProductAttributeService productAttributeService;
+	
+	@Autowired
+	private PageableProductOptionValueRepository pageableProductOptionValueRepository;
 	
 	private ProductOptionValueRepository productOptionValueRepository;
 	
@@ -99,6 +106,15 @@ public class ProductOptionValueServiceImpl extends
 	@Override
 	public ProductOptionValue getById(MerchantStore store, Long optionValueId) {
 		return productOptionValueRepository.findOne(store.getId(), optionValueId);
+	}
+
+
+	@Override
+	public Page<ProductOptionValue> getByMerchant(MerchantStore store, Language language, String name, int page,
+			int count) {
+	    Validate.notNull(store, "MerchantStore cannot be null");
+	    Pageable p = new PageRequest(page, count);
+	    return pageableProductOptionValueRepository.listOptionValues(store.getId(), name, p);
 	}
 
 

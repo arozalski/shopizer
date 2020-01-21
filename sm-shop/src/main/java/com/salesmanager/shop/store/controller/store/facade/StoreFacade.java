@@ -1,15 +1,13 @@
 package com.salesmanager.shop.store.controller.store.facade;
 
-import javax.servlet.http.HttpServletRequest;
 import com.salesmanager.core.model.content.InputContentFile;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.merchant.MerchantStoreCriteria;
 import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.shop.model.shop.PersistableBrand;
-import com.salesmanager.shop.model.shop.PersistableMerchantStore;
-import com.salesmanager.shop.model.shop.ReadableBrand;
-import com.salesmanager.shop.model.shop.ReadableMerchantStore;
-import com.salesmanager.shop.model.shop.ReadableMerchantStoreList;
+import com.salesmanager.shop.model.store.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Layer between shop controllers, services and API with sm-core
@@ -33,6 +31,15 @@ public interface StoreFacade {
   MerchantStore getByCode(String code);
 
   ReadableMerchantStore getByCode(String code, String lang);
+  
+  ReadableMerchantStoreList findAll(MerchantStoreCriteria criteria, Language language, int page, int count);
+  
+  /**
+   * List child stores
+   * @param code
+   * @return
+   */
+  ReadableMerchantStoreList getChildStores(Language language, String code, int start, int count);
 
   ReadableMerchantStore getByCode(String code, Language lang);
 
@@ -46,7 +53,7 @@ public interface StoreFacade {
    * @return
    * @throws Exception
    */
-  ReadableMerchantStoreList getByCriteria(MerchantStoreCriteria criteria, String drawParam, Language lang);
+  ReadableMerchantStoreList getByCriteria(MerchantStoreCriteria criteria, Language lang);
 
   /**
    * Creates a brand new MerchantStore
@@ -96,5 +103,11 @@ public interface StoreFacade {
    * @param cmsContentImage
    */
   void addStoreLogo(String code, InputContentFile cmsContentImage);
+  
+  /**
+   * Returns store id, code and name only
+   * @return
+   */
+  List<ReadableMerchantStore> getMerchantStoreNames();
 
 }

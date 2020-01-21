@@ -1,13 +1,14 @@
 package com.salesmanager.shop.model.catalog.product;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.salesmanager.shop.model.catalog.category.ReadableCategory;
 import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
 import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductAttribute;
 import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductOption;
+import com.salesmanager.shop.model.catalog.product.type.ReadableProductType;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
 
 
 public class ReadableProduct extends ProductEntity implements Serializable {
@@ -26,6 +27,7 @@ public class ReadableProduct extends ProductEntity implements Serializable {
 	private List<ReadableProductAttribute> attributes;
 	private List<ReadableProductOption> options;
 	private List<ReadableCategory> categories;
+	private ReadableProductType type;
 	private boolean canBePurchased = false;
 	
 	//RENTAL
@@ -105,5 +107,11 @@ public class ReadableProduct extends ProductEntity implements Serializable {
 	public void setOptions(List<ReadableProductOption> options) {
 		this.options = options;
 	}
+  public ReadableProductType getType() {
+    return type;
+  }
+  public void setType(ReadableProductType type) {
+    this.type = type;
+  }
 
 }

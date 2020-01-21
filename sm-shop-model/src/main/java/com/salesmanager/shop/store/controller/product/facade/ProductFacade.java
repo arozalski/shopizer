@@ -1,22 +1,14 @@
 package com.salesmanager.shop.store.controller.product.facade;
 
-import java.util.List;
 import com.salesmanager.core.model.catalog.category.Category;
 import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.catalog.product.ProductCriteria;
-import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer;
 import com.salesmanager.core.model.catalog.product.review.ProductReview;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.shop.model.catalog.manufacturer.PersistableManufacturer;
-import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
-import com.salesmanager.shop.model.catalog.product.LightPersistableProduct;
-import com.salesmanager.shop.model.catalog.product.PersistableProduct;
-import com.salesmanager.shop.model.catalog.product.PersistableProductReview;
-import com.salesmanager.shop.model.catalog.product.ProductPriceEntity;
-import com.salesmanager.shop.model.catalog.product.ReadableProduct;
-import com.salesmanager.shop.model.catalog.product.ReadableProductList;
-import com.salesmanager.shop.model.catalog.product.ReadableProductReview;
+import com.salesmanager.shop.model.catalog.product.*;
+
+import java.util.List;
 
 public interface ProductFacade {
 
@@ -49,6 +41,13 @@ public interface ProductFacade {
    */
   ReadableProduct getProduct(MerchantStore store, Long id, Language language) throws Exception;
 
+  /**
+   * 
+   * @param sku
+   * @param store
+   * @return
+   */
+  Product getProduct(String sku, MerchantStore store);
 
   /**
    * Reads a product by code
@@ -104,6 +103,14 @@ public interface ProductFacade {
    * @throws Exception
    */
   void deleteProduct(Product product) throws Exception;
+  
+  /**
+   * Delete product
+   * @param id
+   * @param store
+   * @throws Exception
+   */
+  void deleteProduct(Long id, MerchantStore store);
 
 
   /**
@@ -174,51 +181,16 @@ public interface ProductFacade {
    */
   List<ReadableProductReview> getProductReviews(Product product, MerchantStore store,
       Language language) throws Exception;
-
+  
   /**
-   * Creates or saves a manufacturer
-   * 
-   * @param manufacturer
+   * validates if product exists
+   * @param sku
    * @param store
-   * @param language
-   * @throws Exception
-   */
-  void saveOrUpdateManufacturer(PersistableManufacturer manufacturer, MerchantStore store,
-      Language language) throws Exception;
-
-  /**
-   * Deletes a manufacturer
-   * 
-   * @param manufacturer
-   * @param store
-   * @param language
-   * @throws Exception
-   */
-  void deleteManufacturer(Manufacturer manufacturer, MerchantStore store, Language language)
-      throws Exception;
-
-  /**
-   * Get a Manufacturer by id
-   * 
-   * @param id
-   * @param store
-   * @param language
    * @return
-   * @throws Exception
    */
-  ReadableManufacturer getManufacturer(Long id, MerchantStore store, Language language)
-      throws Exception;
+  public boolean exists(String sku, MerchantStore store);
 
-  /**
-   * Get all Manufacturer
-   * 
-   * @param store
-   * @param language
-   * @return
-   * @throws Exception
-   */
-  List<ReadableManufacturer> getAllManufacturers(MerchantStore store, Language language)
-      throws Exception;
+
 
   /**
    * Get related items

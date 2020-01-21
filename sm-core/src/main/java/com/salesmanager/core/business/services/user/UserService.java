@@ -1,12 +1,14 @@
 package com.salesmanager.core.business.services.user;
 
-import java.util.List;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.common.generic.SalesManagerEntityService;
 import com.salesmanager.core.model.common.Criteria;
 import com.salesmanager.core.model.common.GenericEntityList;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.user.User;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 
 
@@ -29,7 +31,10 @@ public interface UserService extends SalesManagerEntityService<Long, User> {
 
   User findByStore(Long userId, String storeCode) throws ServiceException;
 
+  @Deprecated
   GenericEntityList<User> listByCriteria(Criteria criteria) throws ServiceException;
+  
+  Page<User> listByCriteria(Criteria criteria, int page, int count) throws ServiceException;
 
 
 

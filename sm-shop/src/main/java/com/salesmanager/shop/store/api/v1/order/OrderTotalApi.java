@@ -1,24 +1,5 @@
 package com.salesmanager.shop.store.api.v1.order;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.salesmanager.core.business.services.catalog.product.PricingService;
 import com.salesmanager.core.business.services.customer.CustomerService;
 import com.salesmanager.core.business.services.order.OrderService;
@@ -34,18 +15,25 @@ import com.salesmanager.core.model.shoppingcart.ShoppingCartItem;
 import com.salesmanager.shop.model.order.ReadableOrderTotalSummary;
 import com.salesmanager.shop.populator.order.ReadableOrderSummaryPopulator;
 import com.salesmanager.shop.store.controller.shoppingCart.facade.ShoppingCartFacade;
-import com.salesmanager.shop.store.controller.store.facade.StoreFacade;
 import com.salesmanager.shop.utils.LabelUtils;
-import com.salesmanager.shop.utils.LanguageUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/v1")
 public class OrderTotalApi {
-
-  @Inject private StoreFacade storeFacade;
-
-  @Inject private LanguageUtils languageUtils;
 
   @Inject private ShoppingCartFacade shoppingCartFacade;
 
@@ -73,7 +61,7 @@ public class OrderTotalApi {
    * @throws Exception
    */
   @RequestMapping(
-      value = {"/auth/cart/{code}/payment"},
+      value = {"/auth/cart/{id}/total"},
       method = RequestMethod.GET)
   @ResponseBody
   @ApiImplicitParams({
@@ -81,7 +69,7 @@ public class OrderTotalApi {
       @ApiImplicitParam(name = "lang", dataType = "String", defaultValue = "en")
   })
   public ReadableOrderTotalSummary payment(
-      @PathVariable final String code,
+      @PathVariable final Long id,
       @RequestParam(value = "quote", required = false) Long quote,
       @ApiIgnore MerchantStore merchantStore,
       @ApiIgnore Language language,
@@ -98,22 +86,22 @@ public class OrderTotalApi {
         response.sendError(503, "Error while getting user details to calculate shipping quote");
       }
 
-      ShoppingCart shoppingCart = shoppingCartFacade.getShoppingCartModel(code, merchantStore);
+      ShoppingCart shoppingCart = shoppingCartFacade.getShoppingCartModel(id, merchantStore);
 
       if (shoppingCart == null) {
-        response.sendError(404, "Cart code " + code + " does not exist");
+        response.sendError(404, "Cart id " + id + " does not exist");
         return null;
       }
 
       if (shoppingCart.getCustomerId() == null) {
         response.sendError(
-            404, "Cart code " + code + " does not exist for exist for user " + userName);
+            404, "Cart id " + id + " does not exist for exist for user " + userName);
         return null;
       }
 
       if (shoppingCart.getCustomerId().longValue() != customer.getId().longValue()) {
         response.sendError(
-            404, "Cart code " + code + " does not exist for exist for user " + userName);
+            404, "Cart id " + id + " does not exist for exist for user " + userName);
         return null;
       }
 
@@ -153,8 +141,17 @@ public class OrderTotalApi {
     }
   }
 
+  /**
+   * Public api
+   * @param id
+   * @param quote
+   * @param merchantStore
+   * @param language
+   * @param response
+   * @return
+   */
   @RequestMapping(
-      value = {"/cart/{code}/payment"},
+      value = {"/cart/{code}/total"},
       method = RequestMethod.GET)
   @ResponseBody
   @ApiImplicitParams({
@@ -172,7 +169,7 @@ public class OrderTotalApi {
       ShoppingCart shoppingCart = shoppingCartFacade.getShoppingCartModel(code, merchantStore);
 
       if (shoppingCart == null) {
-        response.sendError(404, "Cart code " + code + " does not exist");
+        response.sendError(404, "Cart code " + code+ " does not exist");
         return null;
       }
 

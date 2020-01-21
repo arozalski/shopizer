@@ -1,13 +1,9 @@
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
-	xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="
-   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
-   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-   http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+
+
+
    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	
@@ -42,7 +38,7 @@
 				<!-- autocomplete query -->
 				<prop key="AUTOCOMPLETE_QUERY"><![CDATA[{"size": 10,"query": {"match": {"keyword": {"query": "%s","operator":"and"}}}}]]></prop>
 				<!-- Google maps key -->
-				<prop key="shopizer.googlemaps_key">AIzaSyB9NBFBiHKJ00SpVlRB495bTktcJE3iwNA</prop>
+				<prop key="shopizer.googlemaps_key">ANO</prop>
 				<!-- #https://www.google.com/recaptcha/admin/create -->
 				<!-- to be used with localhost -->
 				<prop key="shopizer.recapatcha_public_key">6Le3DiUUAAAAAGECVhc4zwFewu8bG-6etonJNTvD</prop>
@@ -69,6 +65,7 @@
 	<!-- Add new templates in the list, should point to pages/shop/templates and resources/templates -->
 	<util:list id="templates" value-type="java.lang.String">
 		<value>bootstrap</value>
+		<value>december</value>
 		<value>generic</value>
 		<value>exoticamobilia</value>
     </util:list>

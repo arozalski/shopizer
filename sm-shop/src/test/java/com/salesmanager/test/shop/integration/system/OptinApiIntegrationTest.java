@@ -1,6 +1,12 @@
 package com.salesmanager.test.shop.integration.system;
 
-import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.salesmanager.core.model.system.optin.OptinType;
+import com.salesmanager.shop.application.ShopApplication;
+import com.salesmanager.shop.model.customer.optin.PersistableCustomerOptin;
+import com.salesmanager.shop.model.system.PersistableOptin;
+import com.salesmanager.test.shop.common.ServicesTestSupport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +17,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.salesmanager.core.model.system.optin.OptinType;
-import com.salesmanager.shop.application.ShopApplication;
-import com.salesmanager.shop.model.customer.optin.PersistableCustomerOptin;
-import com.salesmanager.shop.model.system.PersistableOptin;
-import com.salesmanager.test.shop.common.ServicesTestSupport;
+
+import static org.junit.Assert.assertTrue;
 
 @SpringBootTest(classes = ShopApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
@@ -37,7 +38,7 @@ public class OptinApiIntegrationTest extends ServicesTestSupport {
       
       final ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
       final String json = writer.writeValueAsString(optin);
-      System.out.println(json);
+ 
       
       final HttpEntity<String> entity = new HttpEntity<>(json, getHeader());
       final ResponseEntity<PersistableOptin> response = testRestTemplate.postForEntity("/api/v1/private/optin", entity, PersistableOptin.class);

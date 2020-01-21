@@ -1,16 +1,17 @@
 package com.salesmanager.core.business.repositories.merchant;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.model.common.GenericEntityList;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.merchant.MerchantStoreCriteria;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
 
 public class MerchantRepositoryImpl implements MerchantRepositoryCustom {
 
@@ -25,7 +26,7 @@ public class MerchantRepositoryImpl implements MerchantRepositoryCustom {
     try {
       StringBuilder req = new StringBuilder();
       req.append(
-          "select distinct m from MerchantStore m left join fetch m.country mc left join fetch m.currency mc left join fetch m.zone mz left join fetch m.defaultLanguage md left join fetch m.languages mls");
+          "select distinct m from MerchantStore m left join fetch m.country mc left join fetch m.parent cp left join fetch m.currency mc left join fetch m.zone mz left join fetch m.defaultLanguage md left join fetch m.languages mls");
       StringBuilder countBuilder = new StringBuilder();
       countBuilder.append("select count(distinct m) from MerchantStore m");
       if (criteria.getCode() != null) {
@@ -72,18 +73,25 @@ public class MerchantRepositoryImpl implements MerchantRepositoryCustom {
       GenericEntityList entityList = new GenericEntityList();
       entityList.setTotalCount(count.intValue());
 
-      if (criteria.getMaxCount() > 0) {
-
-        q.setFirstResult(criteria.getStartIndex());
-        if (criteria.getMaxCount() < count.intValue()) {
-          q.setMaxResults(criteria.getMaxCount());
-        } else {
-          q.setMaxResults(count.intValue());
-        }
+      if(criteria.isLegacyPagination()) {
+	      if (criteria.getMaxCount() > 0) {
+	        q.setFirstResult(criteria.getStartIndex());
+	        if (criteria.getMaxCount() < count.intValue()) {
+	          q.setMaxResults(criteria.getMaxCount());
+	        } else {
+	          q.setMaxResults(count.intValue());
+	        }
+	      }
+      } else {
+    	  q.setFirstResult((criteria.getStartPage()-1) * criteria.getPageSize()); 
+    	  q.setMaxResults(criteria.getPageSize());
+    	  int lastPageNumber = (int) ((count.intValue() / criteria.getPageSize()) + 1);
+    	  entityList.setTotalPage(lastPageNumber);
       }
 
       List<MerchantStore> stores = q.getResultList();
       entityList.setList(stores);
+
 
       return entityList;
 

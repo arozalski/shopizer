@@ -1,14 +1,12 @@
 package com.salesmanager.shop.model.customer;
 
-import java.io.Serializable;
-
-import javax.validation.Valid;
-
+import com.salesmanager.shop.model.customer.address.Address;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.salesmanager.shop.model.customer.address.Address;
-import io.swagger.annotations.ApiModelProperty;
+import javax.validation.Valid;
+import java.io.Serializable;
 
 public class CustomerEntity extends Customer implements Serializable {
 
@@ -38,8 +36,8 @@ public class CustomerEntity extends Customer implements Serializable {
 	
 	private String storeCode;
 	
-	@ApiModelProperty(notes = "Username (use email address)")
-	@NotEmpty(message="{NotEmpty.customer.userName}")
+	//@ApiModelProperty(notes = "Username (use email address)")
+	//@NotEmpty(message="{NotEmpty.customer.userName}")
 	//can be email or anything else
 	private String userName;
 	

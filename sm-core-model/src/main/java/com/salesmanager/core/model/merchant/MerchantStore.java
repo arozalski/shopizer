@@ -1,27 +1,5 @@
 package com.salesmanager.core.model.merchant;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 import com.salesmanager.core.constants.MeasureUnit;
 import com.salesmanager.core.constants.SchemaConstant;
 import com.salesmanager.core.model.common.audit.AuditSection;
@@ -32,6 +10,12 @@ import com.salesmanager.core.model.reference.currency.Currency;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.reference.zone.Zone;
 import com.salesmanager.core.utils.CloneUtils;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.persistence.*;
+import javax.validation.constraints.Pattern;
+import java.util.*;
 
 @Entity
 @Table(name = "MERCHANT_STORE", schema = SchemaConstant.SALESMANAGER_SCHEMA)
@@ -40,6 +24,13 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> im
 
 
   public final static String DEFAULT_STORE = "DEFAULT";
+  
+  public MerchantStore(Integer id, String code, String name) {
+	  this.id = id;
+	  this.code = code;
+	  this.storename = name;
+	  
+  }
 
   @Id
   @Column(name = "MERCHANT_ID", unique = true, nullable = false)
@@ -50,6 +41,16 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> im
 
   @Embedded
   private AuditSection auditSection = new AuditSection();
+  
+  @ManyToOne
+  @JoinColumn(name = "PARENT_ID")
+  private MerchantStore parent;
+  
+  @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
+  private Set<MerchantStore> stores = new HashSet<MerchantStore>();
+  
+  @Column(name = "IS_RETAILER")
+  private Boolean retailer = false;
 
   @NotEmpty
   @Column(name = "STORE_NAME", nullable = false, length = 100)
@@ -357,6 +358,30 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> im
   public void setAuditSection(AuditSection audit) {
     this.auditSection = audit;
 
+  }
+
+  public MerchantStore getParent() {
+    return parent;
+  }
+
+  public void setParent(MerchantStore parent) {
+    this.parent = parent;
+  }
+
+  public Set<MerchantStore> getStores() {
+    return stores;
+  }
+
+  public void setStores(Set<MerchantStore> stores) {
+    this.stores = stores;
+  }
+
+  public Boolean isRetailer() {
+    return retailer;
+  }
+
+  public void setRetailer(Boolean retailer) {
+    this.retailer = retailer;
   }
 
 

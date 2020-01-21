@@ -1,16 +1,5 @@
 package com.salesmanager.shop.populator.catalog;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.springframework.stereotype.Component;
-
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.services.catalog.category.CategoryService;
 import com.salesmanager.core.business.services.reference.language.LanguageService;
@@ -20,6 +9,14 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.catalog.category.CategoryDescription;
 import com.salesmanager.shop.model.catalog.category.PersistableCategory;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class PersistableCategoryPopulator extends
@@ -128,7 +125,7 @@ public class PersistableCategoryPopulator extends
     			        }
     			        if(d.getLanguage().equals(description.getLanguage().getCode())) {
             				description.setCategory(target);
-            				description = this.buildDescription(d, description);
+            				description = buildDescription(d, description);
             				descriptions.add(description);
     			        }
     			    }

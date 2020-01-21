@@ -1,17 +1,16 @@
 package com.salesmanager.core.business.repositories.content;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
 import com.salesmanager.core.model.content.Content;
 import com.salesmanager.core.model.content.ContentDescription;
 import com.salesmanager.core.model.content.ContentType;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ContentRepositoryImpl implements ContentRepositoryCustom {
@@ -32,6 +31,7 @@ public class ContentRepositoryImpl implements ContentRepositoryCustom {
 			qs.append("where c.contentType in (:ct) ");
 			qs.append("and cm.id =:cm ");
 			qs.append("and cd.language.id =:cl ");
+			qs.append("and c.visible=true ");
 			qs.append("order by c.sortOrder");
 
 			String hql = qs.toString();
@@ -69,6 +69,7 @@ public class ContentRepositoryImpl implements ContentRepositoryCustom {
 			qs.append("select c from Content c ");
 			qs.append("left join fetch c.descriptions cd join fetch c.merchantStore cm ");
 			qs.append("where cm.id =:cm ");
+			qs.append("and c.visible =true ");
 			qs.append("and cd.seUrl =:se ");
 
 

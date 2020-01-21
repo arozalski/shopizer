@@ -1,15 +1,6 @@
 package com.salesmanager.shop.populator.user;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import com.salesmanager.core.business.exception.ConversionException;
-import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.reference.language.LanguageService;
 import com.salesmanager.core.business.services.user.GroupService;
 import com.salesmanager.core.business.utils.AbstractDataPopulator;
@@ -19,6 +10,15 @@ import com.salesmanager.core.model.user.Group;
 import com.salesmanager.core.model.user.User;
 import com.salesmanager.shop.model.security.PersistableGroup;
 import com.salesmanager.shop.model.user.PersistableUser;
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Component
@@ -66,21 +66,20 @@ public class PersistableUserPopulator extends AbstractDataPopulator<PersistableU
     target.setMerchantStore(store);
 
     List<Group> userGroups = new ArrayList<Group>();
+    List<String> names = new ArrayList<String>();
     for (PersistableGroup group : source.getGroups()) {
-      
-      Group g = null;
-      try {
-        g = groupService.findByName(group.getName());
-        if(g == null) {
-          throw new ConversionException("Cannot find group [" + group.getName() + "]");
-        }
-      } catch (ServiceException e) {
-        throw new ConversionException("Cannot find group [" + group.getName() + "]",e);
-      }
-      userGroups.add(g);
+      names.add(group.getName());
     }
+    try {
+      List<Group> groups = groupService.listGroupByNames(names);
+      for(Group g: groups) {
+        userGroups.add(g);
+      }
+    } catch (Exception e1) {
+      throw new ConversionException("Error while getting user groups",e1);
+    }
+    
     target.setGroups(userGroups);
-
 
     return target;
   }
