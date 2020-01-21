@@ -1,5 +1,17 @@
 package com.salesmanager.shop.store.facade.product;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.catalog.category.CategoryService;
 import com.salesmanager.core.business.services.catalog.product.PricingService;
@@ -20,7 +32,14 @@ import com.salesmanager.core.model.catalog.product.review.ProductReview;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.constants.Constants;
-import com.salesmanager.shop.model.catalog.product.*;
+import com.salesmanager.shop.model.catalog.product.LightPersistableProduct;
+import com.salesmanager.shop.model.catalog.product.PersistableProduct;
+import com.salesmanager.shop.model.catalog.product.PersistableProductReview;
+import com.salesmanager.shop.model.catalog.product.ProductPriceEntity;
+import com.salesmanager.shop.model.catalog.product.ProductSpecification;
+import com.salesmanager.shop.model.catalog.product.ReadableProduct;
+import com.salesmanager.shop.model.catalog.product.ReadableProductList;
+import com.salesmanager.shop.model.catalog.product.ReadableProductReview;
 import com.salesmanager.shop.populator.catalog.PersistableProductPopulator;
 import com.salesmanager.shop.populator.catalog.PersistableProductReviewPopulator;
 import com.salesmanager.shop.populator.catalog.ReadableProductPopulator;
@@ -31,18 +50,6 @@ import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
 import com.salesmanager.shop.store.controller.product.facade.ProductFacade;
 import com.salesmanager.shop.utils.DateUtil;
 import com.salesmanager.shop.utils.ImageFilePath;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("productFacade")
 @Profile({"default", "cloud", "gcp", "aws"})

@@ -1,5 +1,22 @@
 package com.salesmanager.shop.store.api.v1.customer;
 
+import java.security.Principal;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import com.salesmanager.core.model.customer.CustomerCriteria;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
@@ -7,17 +24,13 @@ import com.salesmanager.shop.model.customer.PersistableCustomer;
 import com.salesmanager.shop.model.customer.ReadableCustomer;
 import com.salesmanager.shop.populator.customer.ReadableCustomerList;
 import com.salesmanager.shop.store.controller.customer.facade.CustomerFacade;
-import io.swagger.annotations.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.security.Principal;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1")
@@ -50,7 +63,7 @@ public class CustomerApi {
       return customerFacade.create(customer, merchantStore);
 
   }
-  
+
 /*  *//**
    * Update authenticated customer adresses
    * @param userName
@@ -75,9 +88,9 @@ public class CustomerApi {
       // TODO more validation
       return customerFacade.update(customer, merchantStore);
   }*/
-  
-  
-  
+
+
+
 
   @PutMapping("/private/customer/{id}")
   @ApiOperation(
@@ -97,7 +110,7 @@ public class CustomerApi {
       customer.setId(id);
       return customerFacade.update(customer, merchantStore);
   }
-  
+
   @PatchMapping("/private/customer/{id}/address")
   @ApiOperation(
       httpMethod = "PATCH",
@@ -194,7 +207,7 @@ public class CustomerApi {
     String userName = principal.getName();
     return customerFacade.getCustomerByNick(userName, merchantStore, language);
   }
-  
+
   @PatchMapping("/auth/customer/address")
   @ApiOperation(
       httpMethod = "PATCH",
@@ -211,12 +224,12 @@ public class CustomerApi {
       HttpServletRequest request) {
       Principal principal = request.getUserPrincipal();
       String userName = principal.getName();
-      
+
 
       customerFacade.updateAddress(userName, customer, merchantStore);
-  
+
   }
-  
+
   @PutMapping("/auth/customer/{id}")
   @ApiOperation(
       httpMethod = "PUT",
@@ -231,12 +244,12 @@ public class CustomerApi {
       @ApiIgnore MerchantStore merchantStore,
       @Valid @RequestBody PersistableCustomer customer,
       HttpServletRequest request) {
-      
+
       Principal principal = request.getUserPrincipal();
       String userName = principal.getName();
 
       return customerFacade.update(userName, customer, merchantStore);
   }
-  
-  
+
+
 }

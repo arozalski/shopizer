@@ -1,15 +1,12 @@
 package com.salesmanager.test.shop.integration.category;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.salesmanager.core.business.constants.Constants;
-import com.salesmanager.shop.application.ShopApplication;
-import com.salesmanager.shop.model.catalog.category.*;
-import com.salesmanager.shop.model.catalog.manufacturer.PersistableManufacturer;
-import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
-import com.salesmanager.shop.model.catalog.product.PersistableProduct;
-import com.salesmanager.shop.model.catalog.product.ProductSpecification;
-import com.salesmanager.test.shop.common.ServicesTestSupport;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +18,20 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.salesmanager.core.business.constants.Constants;
+import com.salesmanager.shop.application.ShopApplication;
+import com.salesmanager.shop.model.catalog.category.Category;
+import com.salesmanager.shop.model.catalog.category.CategoryDescription;
+import com.salesmanager.shop.model.catalog.category.PersistableCategory;
+import com.salesmanager.shop.model.catalog.category.ReadableCategory;
+import com.salesmanager.shop.model.catalog.category.ReadableCategoryList;
+import com.salesmanager.shop.model.catalog.manufacturer.PersistableManufacturer;
+import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
+import com.salesmanager.shop.model.catalog.product.PersistableProduct;
+import com.salesmanager.shop.model.catalog.product.ProductSpecification;
+import com.salesmanager.test.shop.common.ServicesTestSupport;
 
 @SpringBootTest(classes = ShopApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)

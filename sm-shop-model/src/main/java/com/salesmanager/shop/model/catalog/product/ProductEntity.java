@@ -1,10 +1,9 @@
 package com.salesmanager.shop.model.catalog.product;
 
-import com.salesmanager.core.model.catalog.product.ProductCondition;
-import com.salesmanager.core.model.catalog.product.RentalStatus;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import com.salesmanager.core.model.catalog.product.ProductCondition;
+import com.salesmanager.core.model.catalog.product.RentalStatus;
 
 /**
  * A product entity is used by services API to populate or retrieve a Product

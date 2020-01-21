@@ -1,5 +1,29 @@
 package com.salesmanager.shop.store.api.v1.customer;
 
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import org.apache.commons.lang.Validate;
+import org.apache.http.auth.AuthenticationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mobile.device.Device;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import com.salesmanager.core.model.customer.Customer;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
@@ -17,26 +41,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
-import org.apache.commons.lang.Validate;
-import org.apache.http.auth.AuthenticationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mobile.device.Device;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -87,11 +91,11 @@ public class AuthenticateCustomerApi {
             
             //Transition
             customer.setUserName(customer.getEmailAddress());
-            
+
             Validate.notNull(customer.getUserName(),"Username cannot be null");
             Validate.notNull(customer.getBilling(),"Requires customer Country code");
             Validate.notNull(customer.getBilling().getCountry(),"Requires customer Country code");
-            
+
             customerFacade.registerCustomer(customer, merchantStore, language);
             
             // Perform the security
@@ -212,28 +216,28 @@ public class AuthenticateCustomerApi {
                 return ResponseEntity.notFound().build();
             }
             
-            customerFacade.resetPassword(customer, merchantStore, language);            
+            customerFacade.resetPassword(customer, merchantStore, language);
             return ResponseEntity.ok(Void.class);
-            
+
         } catch(Exception e) {
             return ResponseEntity.badRequest().body("Exception when reseting password "+e.getMessage());
         }
     }
-    
+
     @RequestMapping(value = "/customer/password", method = RequestMethod.POST, produces ={ "application/json" })
     @ApiOperation(httpMethod = "PUT", value = "Sends a request to reset password", notes = "Password reset request is {\"username\":\"test@email.com\"}",response = ResponseEntity.class)
     public ResponseEntity<?> changePassword(@RequestBody @Valid PasswordRequest passwordRequest, HttpServletRequest request) {
 
         try {
-            
+
             MerchantStore merchantStore = storeFacade.getByCode(request);
 
             Customer customer = customerFacade.getCustomerByUserName(passwordRequest.getUsername(), merchantStore);
-            
+
             if(customer == null){
                 return ResponseEntity.notFound().build();
             }
-            
+
             //need to validate if password matches
             if(!customerFacade.passwordMatch(passwordRequest.getCurrent(), customer)) {
               throw new ResourceNotFoundException("Username or password does not match");
@@ -242,8 +246,8 @@ public class AuthenticateCustomerApi {
             if(!passwordRequest.getPassword().equals(passwordRequest.getRepeatPassword())) {
               throw new ResourceNotFoundException("Both passwords do not match");
             }
-            
-            customerFacade.changePassword(customer, passwordRequest.getPassword());           
+
+            customerFacade.changePassword(customer, passwordRequest.getPassword());
             return ResponseEntity.ok(Void.class);
             
         } catch(Exception e) {

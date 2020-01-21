@@ -1,5 +1,6 @@
 package com.salesmanager.shop.store.controller.manufacturer.facade;
 
+import java.util.List;
 import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
@@ -7,8 +8,6 @@ import com.salesmanager.shop.model.catalog.manufacturer.PersistableManufacturer;
 import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
 import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturerList;
 import com.salesmanager.shop.model.entity.ListCriteria;
-
-import java.util.List;
 
 /**
  * Manufacturer / brand / collection product grouping

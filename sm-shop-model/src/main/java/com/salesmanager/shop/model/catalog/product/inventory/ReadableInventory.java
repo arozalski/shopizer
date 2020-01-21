@@ -1,9 +1,8 @@
 package com.salesmanager.shop.model.catalog.product.inventory;
 
+import java.util.List;
 import com.salesmanager.shop.model.catalog.product.ReadableProductPrice;
 import com.salesmanager.shop.model.store.ReadableMerchantStore;
-
-import java.util.List;
 
 public class ReadableInventory extends InventoryEntity {
 

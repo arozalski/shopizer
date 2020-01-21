@@ -1,5 +1,19 @@
 package com.salesmanager.shop.store.controller.store.facade;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.Validate;
+import org.drools.core.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.content.ContentService;
@@ -17,7 +31,12 @@ import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.system.MerchantConfiguration;
 import com.salesmanager.core.model.system.MerchantConfigurationType;
 import com.salesmanager.shop.model.content.ReadableImage;
-import com.salesmanager.shop.model.store.*;
+import com.salesmanager.shop.model.store.MerchantConfigEntity;
+import com.salesmanager.shop.model.store.PersistableBrand;
+import com.salesmanager.shop.model.store.PersistableMerchantStore;
+import com.salesmanager.shop.model.store.ReadableBrand;
+import com.salesmanager.shop.model.store.ReadableMerchantStore;
+import com.salesmanager.shop.model.store.ReadableMerchantStoreList;
 import com.salesmanager.shop.populator.store.PersistableMerchantStorePopulator;
 import com.salesmanager.shop.populator.store.ReadableMerchantStorePopulator;
 import com.salesmanager.shop.store.api.exception.ConversionRuntimeException;
@@ -25,21 +44,6 @@ import com.salesmanager.shop.store.api.exception.ResourceNotFoundException;
 import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
 import com.salesmanager.shop.utils.ImageFilePath;
 import com.salesmanager.shop.utils.LanguageUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.Validate;
-import org.drools.core.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service("storeFacade")
 public class StoreFacadeImpl implements StoreFacade {
@@ -464,6 +468,7 @@ public class StoreFacadeImpl implements StoreFacade {
 			if(criteria.isRetailers()) {
 				stores = merchantStoreService.listAllRetailers(name, page, count);
 			} else {
+
 				stores = merchantStoreService.listAll(name, page, count);
 			}
 
@@ -474,12 +479,11 @@ public class StoreFacadeImpl implements StoreFacade {
 					readableStores.add(convertMerchantStoreToReadableMerchantStore(language, store));
 			}
 			readableList.setData(readableStores);
-			readableList.setRecordsFiltered(stores.getSize());
-			readableList.setTotalPages(stores.getTotalPages());
 			readableList.setRecordsTotal(stores.getTotalElements());
+			readableList.setTotalPages(stores.getTotalPages());
 			readableList.setNumber(stores.getSize());
-			
-			return readableList;
+			readableList.setRecordsFiltered(stores.getSize());
+						return readableList;
 
 		} catch (ServiceException e) {
 			throw new ServiceRuntimeException("Error while finding all merchant", e);

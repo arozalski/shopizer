@@ -1,6 +1,6 @@
 Shopizer (for java 1.8 +)
 -------------------
-[![last_version](https://img.shields.io/badge/last_version-v2.7.0-blue.svg?style=flat)](https://github.com/shopizer-ecommerce/shopizer/tree/2..6.0)
+[![last_version](https://img.shields.io/badge/last_version-v2.10.0-blue.svg?style=flat)](https://github.com/shopizer-ecommerce/shopizer/tree/2.10.0)
 [![Official site](https://img.shields.io/website-up-down-green-red/https/shields.io.svg?label=official%20site)](http://www.shopizer.com/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/shopizerecomm/shopizer.svg)](https://hub.docker.com/r/shopizerecomm/shopizer)
 [![stackoverflow](https://img.shields.io/badge/shopizer-stackoverflow-orange.svg?style=flat)](http://stackoverflow.com/questions/tagged/shopizer)
@@ -32,13 +32,10 @@ You can also download the zip file containing the code from https://github.com/s
 
 To build the application:
 -------------------	
-From the command line with Maven installed:
+From the command line:
 
-	$ cd shopizer
-	$ mvn clean install
-if Maven is not installed, use maven wrapper
-       
-	$ mvnw clean install
+	$ cd shopizer 
+	$ mvmw clean install
 	
 
 Run the application from Tomcat 
@@ -62,10 +59,7 @@ Run the application from Spring boot
 -------------------
 
        $ cd sm-shop
-       $ mvn spring-boot:run
-if Maven is not installed, use maven wrapper
-       
-	   $ mvnw spring-boot:run
+	   $ mvmw spring-boot:run
 
 Run the application from Spring boot in eclipse
 -------------------
@@ -81,7 +75,7 @@ Access the deployed web application at: http://localhost:8080/
 
 Acces the admin section at: http://localhost:8080/admin
 
-username : admin
+username : admin@shopizer.com
 
 password : password
 

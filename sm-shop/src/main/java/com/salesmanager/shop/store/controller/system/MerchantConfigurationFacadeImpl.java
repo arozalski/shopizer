@@ -1,5 +1,15 @@
 package com.salesmanager.shop.store.controller.system;
 
+import static com.salesmanager.shop.constants.Constants.KEY_FACEBOOK_PAGE_URL;
+import static com.salesmanager.shop.constants.Constants.KEY_GOOGLE_ANALYTICS_URL;
+import static com.salesmanager.shop.constants.Constants.KEY_INSTAGRAM_URL;
+import static com.salesmanager.shop.constants.Constants.KEY_PINTEREST_PAGE_URL;
+import java.util.Optional;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.system.MerchantConfigurationService;
 import com.salesmanager.core.model.merchant.MerchantStore;
@@ -8,16 +18,8 @@ import com.salesmanager.core.model.system.MerchantConfig;
 import com.salesmanager.core.model.system.MerchantConfiguration;
 import com.salesmanager.shop.model.system.Configs;
 import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
+import com.salesmanager.shop.store.controller.order.ShoppingOrderController;
 import io.searchbox.strings.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import java.util.Optional;
-
-import static com.salesmanager.shop.constants.Constants.*;
 
 @Service
 public class MerchantConfigurationFacadeImpl implements MerchantConfigurationFacade {

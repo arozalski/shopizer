@@ -1,10 +1,10 @@
 package com.salesmanager.shop.model.catalog.product.attribute.api;
 
-import com.salesmanager.shop.model.catalog.product.attribute.ProductOptionDescription;
-import com.salesmanager.shop.model.catalog.product.attribute.ProductOptionEntity;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.salesmanager.shop.model.catalog.product.attribute.ProductOptionDescription;
+import com.salesmanager.shop.model.catalog.product.attribute.ProductOptionEntity;
 
 public class PersistableProductOptionEntity extends ProductOptionEntity {
   

@@ -1,5 +1,11 @@
 package com.salesmanager.shop.mapper.catalog;
 
+import javax.inject.Inject;
+
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+
 import com.salesmanager.core.business.services.catalog.product.ProductService;
 import com.salesmanager.core.business.services.catalog.product.attribute.ProductOptionService;
 import com.salesmanager.core.business.services.catalog.product.attribute.ProductOptionValueService;
@@ -12,11 +18,6 @@ import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.mapper.Mapper;
 import com.salesmanager.shop.model.catalog.product.attribute.PersistableProductAttribute;
 import com.salesmanager.shop.store.api.exception.ConversionRuntimeException;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
-
-import javax.inject.Inject;
 
 @Component
 public class PersistableProductAttributeMapper implements Mapper<PersistableProductAttribute, ProductAttribute> {

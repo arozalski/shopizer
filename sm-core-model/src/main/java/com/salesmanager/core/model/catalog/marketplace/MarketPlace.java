@@ -1,14 +1,15 @@
 package com.salesmanager.core.model.catalog.marketplace;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Embedded;
+
 import com.salesmanager.core.model.catalog.catalog.Catalog;
 import com.salesmanager.core.model.common.audit.AuditSection;
 import com.salesmanager.core.model.common.audit.Auditable;
 import com.salesmanager.core.model.generic.SalesManagerEntity;
 import com.salesmanager.core.model.merchant.MerchantStore;
-
-import javax.persistence.Embedded;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A marketplace is the main grouping for the state of product presentation.

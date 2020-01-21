@@ -1,8 +1,8 @@
 package com.salesmanager.shop.model.catalog;
 
-import com.salesmanager.shop.model.entity.ShopEntity;
-
 import java.io.Serializable;
+
+import com.salesmanager.shop.model.entity.ShopEntity;
 
 
 public abstract class NamedEntity extends ShopEntity implements Serializable {

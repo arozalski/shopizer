@@ -1,24 +1,45 @@
 package com.salesmanager.shop.store.api.v1.product;
 
-import com.salesmanager.core.model.merchant.MerchantStore;
-import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.shop.model.catalog.product.attribute.PersistableProductAttribute;
-import com.salesmanager.shop.model.catalog.product.attribute.api.*;
-import com.salesmanager.shop.model.entity.EntityExists;
-import com.salesmanager.shop.store.controller.product.facade.ProductOptionFacade;
-import io.swagger.annotations.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import com.salesmanager.core.model.merchant.MerchantStore;
+import com.salesmanager.core.model.reference.language.Language;
+import com.salesmanager.shop.model.catalog.product.attribute.PersistableProductAttribute;
+import com.salesmanager.shop.model.catalog.product.attribute.api.PersistableProductOptionEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.PersistableProductOptionValueEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductAttributeEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductAttributeList;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionList;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionValueEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionValueList;
+import com.salesmanager.shop.model.entity.EntityExists;
+import com.salesmanager.shop.store.controller.product.facade.ProductOptionFacade;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @RequestMapping("/api/v1")

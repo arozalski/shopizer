@@ -1,9 +1,9 @@
 package com.salesmanager.shop.model.catalog.product.attribute.api;
 
-import com.salesmanager.shop.model.catalog.product.attribute.ProductOptionDescription;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.salesmanager.shop.model.catalog.product.attribute.ProductOptionDescription;
 
 public class ReadableProductOptionFull extends ReadableProductOptionEntity {
 

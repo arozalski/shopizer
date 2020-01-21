@@ -1,10 +1,9 @@
 package com.salesmanager.core.business.configuration.db;
 
-import com.salesmanager.core.model.system.credentials.DbCredentials;
+import javax.inject.Inject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
-
-import javax.inject.Inject;
+import com.salesmanager.core.model.system.credentials.DbCredentials;
 
 //@Configuration
 //@VaultPropertySource("secret/db")

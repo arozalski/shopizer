@@ -1,5 +1,7 @@
 package com.salesmanager.shop.store.controller.user.facade;
 
+import java.util.List;
+
 import com.salesmanager.core.model.common.Criteria;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
@@ -8,8 +10,6 @@ import com.salesmanager.shop.model.user.PersistableUser;
 import com.salesmanager.shop.model.user.ReadableUser;
 import com.salesmanager.shop.model.user.ReadableUserList;
 import com.salesmanager.shop.model.user.UserPassword;
-
-import java.util.List;
 
 /**
  * Access to all methods for managing users

@@ -1,14 +1,13 @@
 package com.salesmanager.core.business.services.catalog.category;
 
+import java.util.List;
+import org.springframework.data.domain.Page;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.common.generic.SalesManagerEntityService;
 import com.salesmanager.core.model.catalog.category.Category;
 import com.salesmanager.core.model.catalog.category.CategoryDescription;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
-import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 public interface CategoryService extends SalesManagerEntityService<Long, Category> {
 
@@ -40,7 +39,7 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	void saveOrUpdate(Category category) throws ServiceException;
 
 	List<Category> getListByDepth(MerchantStore store, int depth);
-	
+
 	Page<Category> getListByDepth(MerchantStore store, Language language, String name, int depth, int page, int count);
 
 	/**
@@ -116,7 +115,7 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	 * @return
 	 */
 	Category findById(Long category);
-	
+
 	int count(MerchantStore store);
 
 

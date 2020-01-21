@@ -1,5 +1,14 @@
 package com.salesmanager.core.business.services.user;
 
+import java.util.List;
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.repositories.user.PageableUserRepository;
 import com.salesmanager.core.business.repositories.user.UserRepository;
@@ -8,14 +17,6 @@ import com.salesmanager.core.model.common.Criteria;
 import com.salesmanager.core.model.common.GenericEntityList;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.user.User;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
-import javax.inject.Inject;
-import java.util.List;
 
 
 

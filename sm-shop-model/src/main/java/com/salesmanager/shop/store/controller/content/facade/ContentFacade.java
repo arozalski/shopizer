@@ -1,12 +1,19 @@
 package com.salesmanager.shop.store.controller.content.facade;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.salesmanager.core.model.content.ContentType;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.shop.model.content.*;
-
-import java.util.List;
-import java.util.Optional;
+import com.salesmanager.shop.model.content.ContentFile;
+import com.salesmanager.shop.model.content.ContentFolder;
+import com.salesmanager.shop.model.content.PersistableContentEntity;
+import com.salesmanager.shop.model.content.PersistableContentPage;
+import com.salesmanager.shop.model.content.ReadableContentBox;
+import com.salesmanager.shop.model.content.ReadableContentEntity;
+import com.salesmanager.shop.model.content.ReadableContentFull;
+import com.salesmanager.shop.model.content.ReadableContentPage;
 
 /**
  * Images and files management
@@ -39,8 +46,8 @@ public interface ContentFacade {
 	 * @param id
 	 */
 	void delete(MerchantStore store, Long id);
-	
-	
+
+
 	/**
 	 * Returns page names and urls configured for a given MerchantStore
 	 * @param store
@@ -61,6 +68,15 @@ public interface ContentFacade {
 	 */
 	ReadableContentPage getContentPage(String code, MerchantStore store, Language language);
 	
+	/**
+	 * Returns page by name
+	 * @param name
+	 * @param store
+	 * @param language
+	 * @return
+	 * @throws Exception
+	 */
+	ReadableContentPage getContentPageByName(String name, MerchantStore store, Language language);
 
 	
 	/**
@@ -100,9 +116,9 @@ public interface ContentFacade {
 	 * @param language
 	 */
 	void saveContentPage(PersistableContentEntity page, MerchantStore merchantStore, Language language);
-	
+
 	ReadableContentFull getContent(String code, MerchantStore store, Language language);
-	
+
 	/**
 	 * Get all content types
 	 * @param type

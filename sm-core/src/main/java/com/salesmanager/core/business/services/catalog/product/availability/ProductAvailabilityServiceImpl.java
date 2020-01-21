@@ -1,5 +1,11 @@
 package com.salesmanager.core.business.services.catalog.product.availability;
 
+import javax.inject.Inject;
+import org.apache.commons.lang3.Validate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.repositories.catalog.product.availability.PageableProductAvailabilityRepository;
 import com.salesmanager.core.business.repositories.catalog.product.availability.ProductAvailabilityRepository;
@@ -7,13 +13,6 @@ import com.salesmanager.core.business.services.common.generic.SalesManagerEntity
 import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.catalog.product.availability.ProductAvailability;
 import com.salesmanager.core.model.merchant.MerchantStore;
-import org.apache.commons.lang3.Validate;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 
 @Service("productAvailabilityService")
 public class ProductAvailabilityServiceImpl extends

@@ -1,31 +1,5 @@
 package com.salesmanager.shop.store.api.v1.store;
 
-import com.google.common.collect.ImmutableMap;
-import com.salesmanager.core.model.common.Criteria;
-import com.salesmanager.core.model.content.FileContentType;
-import com.salesmanager.core.model.content.InputContentFile;
-import com.salesmanager.core.model.merchant.MerchantStoreCriteria;
-import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.shop.model.entity.EntityExists;
-import com.salesmanager.shop.model.store.*;
-import com.salesmanager.shop.store.api.exception.RestApiException;
-import com.salesmanager.shop.store.api.exception.UnauthorizedException;
-import com.salesmanager.shop.store.controller.store.facade.StoreFacade;
-import com.salesmanager.shop.store.controller.user.facade.UserFacade;
-import com.salesmanager.shop.utils.ServiceRequestCriteriaBuilderUtils;
-import io.swagger.annotations.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.annotations.ApiIgnore;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +8,53 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.google.common.collect.ImmutableMap;
+import com.salesmanager.core.model.common.Criteria;
+import com.salesmanager.core.model.content.FileContentType;
+import com.salesmanager.core.model.content.InputContentFile;
+import com.salesmanager.core.model.merchant.MerchantStoreCriteria;
+import com.salesmanager.core.model.reference.language.Language;
+import com.salesmanager.shop.model.entity.EntityExists;
+import com.salesmanager.shop.model.store.PersistableBrand;
+import com.salesmanager.shop.model.store.PersistableMerchantStore;
+import com.salesmanager.shop.model.store.ReadableBrand;
+import com.salesmanager.shop.model.store.ReadableMerchantStore;
+import com.salesmanager.shop.model.store.ReadableMerchantStoreList;
+import com.salesmanager.shop.store.api.exception.RestApiException;
+import com.salesmanager.shop.store.api.exception.UnauthorizedException;
+import com.salesmanager.shop.store.controller.store.facade.StoreFacade;
+import com.salesmanager.shop.store.controller.user.facade.UserFacade;
+import com.salesmanager.shop.utils.ServiceRequestCriteriaBuilderUtils;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping("/api/v1")

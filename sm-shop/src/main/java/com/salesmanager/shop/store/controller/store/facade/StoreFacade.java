@@ -1,13 +1,19 @@
 package com.salesmanager.shop.store.controller.store.facade;
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.salesmanager.core.model.content.InputContentFile;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.merchant.MerchantStoreCriteria;
 import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.shop.model.store.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import com.salesmanager.shop.model.store.PersistableBrand;
+import com.salesmanager.shop.model.store.PersistableMerchantStore;
+import com.salesmanager.shop.model.store.ReadableBrand;
+import com.salesmanager.shop.model.store.ReadableMerchantStore;
+import com.salesmanager.shop.model.store.ReadableMerchantStoreList;
 
 /**
  * Layer between shop controllers, services and API with sm-core

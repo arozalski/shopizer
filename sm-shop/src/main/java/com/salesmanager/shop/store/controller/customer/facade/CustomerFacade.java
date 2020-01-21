@@ -3,18 +3,21 @@
  */
 package com.salesmanager.shop.store.controller.customer.facade;
 
+import java.util.List;
 import com.salesmanager.core.business.services.customer.CustomerService;
 import com.salesmanager.core.model.customer.Customer;
 import com.salesmanager.core.model.customer.CustomerCriteria;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.shoppingcart.ShoppingCart;
-import com.salesmanager.shop.model.customer.*;
+import com.salesmanager.shop.model.customer.CustomerEntity;
+import com.salesmanager.shop.model.customer.PersistableCustomer;
+import com.salesmanager.shop.model.customer.PersistableCustomerReview;
+import com.salesmanager.shop.model.customer.ReadableCustomer;
+import com.salesmanager.shop.model.customer.ReadableCustomerReview;
 import com.salesmanager.shop.model.customer.address.Address;
 import com.salesmanager.shop.model.customer.optin.PersistableCustomerOptin;
 import com.salesmanager.shop.populator.customer.ReadableCustomerList;
-
-import java.util.List;
 
 /**
  * <p>Customer facade working as a bridge between {@link CustomerService} and Controller
@@ -119,7 +122,7 @@ public interface CustomerFacade
 	PersistableCustomer update(PersistableCustomer customer, MerchantStore store);
 	
 	PersistableCustomer update(String userName, PersistableCustomer customer, MerchantStore store);
-	
+
 	/**
 	 * Updates only shipping and billing addresses
 	 * @param customer
@@ -127,9 +130,9 @@ public interface CustomerFacade
 	 * @return
 	 */
 	void updateAddress(PersistableCustomer customer, MerchantStore store);
-	
+
 	void updateAddress(String userName, PersistableCustomer customer, MerchantStore store);
-	
+
 	/**
 	 * Save or update a CustomerReview
 	 * @param review
@@ -167,7 +170,7 @@ public interface CustomerFacade
     ReadableCustomer getCustomerByNick(String userName, MerchantStore merchantStore, Language language);
 
 	void deleteByNick(String nick);
-	
+
 	void deleteById(Long id);
 
 	void delete(Customer entity);
@@ -181,8 +184,8 @@ public interface CustomerFacade
       Language language);
 
 	PersistableCustomerReview updateCustomerReview(Long id, Long reviewId, PersistableCustomerReview review, MerchantStore store, Language language);
-	
+
 	boolean passwordMatch(String rawPassword, Customer customer);
-	
+
 	void changePassword(Customer customer, String newPassword);
 }

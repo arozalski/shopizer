@@ -1,9 +1,8 @@
 package com.salesmanager.shop.store.controller.product.facade;
 
+import java.util.List;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.catalog.product.type.ReadableProductType;
-
-import java.util.List;
 
 public interface ProductTypeFacade {
   

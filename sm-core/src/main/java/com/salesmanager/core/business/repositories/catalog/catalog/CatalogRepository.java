@@ -1,8 +1,9 @@
 package com.salesmanager.core.business.repositories.catalog.catalog;
 
-import com.salesmanager.core.model.catalog.catalog.Catalog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import com.salesmanager.core.model.catalog.catalog.Catalog;
 
 public interface CatalogRepository extends JpaRepository<Catalog, Long> {
 	

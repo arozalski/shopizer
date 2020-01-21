@@ -7,7 +7,6 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
 import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturerFull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

@@ -54,11 +54,9 @@ public class ProductReviewController {
 		
 		setMenu(model, request);
 		
-		Language language = (Language)request.getAttribute("LANGUAGE");
-		
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		Product product = productService.getById(productId);
+		Product product = productService.getProductWithOnlyMerchantStoreById(productId);
 		
 		if(product==null) {
 			return "redirect:/admin/products/products.html";
@@ -104,7 +102,7 @@ public class ProductReviewController {
 		
 		try {
 
-			product = productService.getById(productId);
+			product = productService.getProductWithOnlyMerchantStoreById(productId);
 
 			
 			if(product==null) {

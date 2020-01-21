@@ -1,17 +1,11 @@
 package com.salesmanager.shop.store.api.v1.references;
 
-import com.salesmanager.core.business.services.reference.country.CountryService;
-import com.salesmanager.core.business.services.reference.language.LanguageService;
-import com.salesmanager.core.model.merchant.MerchantStore;
-import com.salesmanager.core.model.reference.currency.Currency;
-import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.shop.model.references.*;
-import com.salesmanager.shop.store.controller.country.facade.CountryFacade;
-import com.salesmanager.shop.store.controller.currency.facade.CurrencyFacade;
-import com.salesmanager.shop.store.controller.language.facade.LanguageFacade;
-import com.salesmanager.shop.store.controller.store.facade.StoreFacade;
-import com.salesmanager.shop.store.controller.zone.facade.ZoneFacade;
-import com.salesmanager.shop.utils.LanguageUtils;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +13,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
+import com.salesmanager.core.business.services.reference.country.CountryService;
+import com.salesmanager.core.business.services.reference.language.LanguageService;
+import com.salesmanager.core.model.merchant.MerchantStore;
+import com.salesmanager.core.model.reference.currency.Currency;
+import com.salesmanager.core.model.reference.language.Language;
+import com.salesmanager.shop.model.references.MeasureUnit;
+import com.salesmanager.shop.model.references.ReadableCountry;
+import com.salesmanager.shop.model.references.ReadableZone;
+import com.salesmanager.shop.model.references.SizeReferences;
+import com.salesmanager.shop.model.references.WeightUnit;
+import com.salesmanager.shop.store.controller.country.facade.CountryFacade;
+import com.salesmanager.shop.store.controller.currency.facade.CurrencyFacade;
+import com.salesmanager.shop.store.controller.language.facade.LanguageFacade;
+import com.salesmanager.shop.store.controller.store.facade.StoreFacade;
+import com.salesmanager.shop.store.controller.zone.facade.ZoneFacade;
+import com.salesmanager.shop.utils.LanguageUtils;
 
 /**
  * Get system Language, Country and Currency objects
@@ -35,9 +41,6 @@ public class ReferencesApi {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ReferencesApi.class);
 
-  @Inject private LanguageService languageService;
-
-  @Inject private CountryService countryService;
 
   @Inject private StoreFacade storeFacade;
 

@@ -1,10 +1,21 @@
 package com.salesmanager.shop.store.controller.product.facade;
 
+import java.util.Optional;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.catalog.product.attribute.PersistableProductAttribute;
-import com.salesmanager.shop.model.catalog.product.attribute.api.*;
-import org.springframework.web.multipart.MultipartFile;
+import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductAttribute;
+import com.salesmanager.shop.model.catalog.product.attribute.api.PersistableProductOptionEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.PersistableProductOptionValueEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductAttributeEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductAttributeList;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionList;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionValueEntity;
+import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionValueList;
 
 
 /*

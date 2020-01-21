@@ -1,5 +1,16 @@
 package com.salesmanager.core.business.modules.integration.payment.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.inject.Inject;
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.salesmanager.core.business.utils.ProductPriceUtils;
 import com.salesmanager.core.model.customer.Customer;
 import com.salesmanager.core.model.merchant.MerchantStore;
@@ -14,17 +25,13 @@ import com.salesmanager.core.model.system.IntegrationModule;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
 import com.stripe.Stripe;
-import com.stripe.exception.*;
+import com.stripe.exception.APIConnectionException;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.InvalidRequestException;
+import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.model.Refund;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.util.*;
 
 public class StripePayment implements PaymentModule {
 	

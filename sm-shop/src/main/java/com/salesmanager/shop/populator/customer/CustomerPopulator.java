@@ -1,6 +1,14 @@
 package com.salesmanager.shop.populator.customer;
 
 
+import java.math.BigDecimal;
+import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.services.customer.attribute.CustomerOptionService;
 import com.salesmanager.core.business.services.customer.attribute.CustomerOptionValueService;
@@ -21,15 +29,6 @@ import com.salesmanager.core.model.reference.zone.Zone;
 import com.salesmanager.shop.model.customer.PersistableCustomer;
 import com.salesmanager.shop.model.customer.address.Address;
 import com.salesmanager.shop.model.customer.attribute.PersistableCustomerAttribute;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.util.Map;
 
 @Component
 public class CustomerPopulator extends
@@ -58,13 +57,6 @@ public class CustomerPopulator extends
 	public Customer populate(PersistableCustomer source, Customer target,
 			MerchantStore store, Language language) throws ConversionException {
 
-/*		Validate.notNull(customerOptionService, "Requires to set CustomerOptionService");
-		Validate.notNull(customerOptionValueService, "Requires to set CustomerOptionValueService");
-		Validate.notNull(zoneService, "Requires to set ZoneService");
-		Validate.notNull(countryService, "Requires to set CountryService");
-		Validate.notNull(languageService, "Requires to set LanguageService");
-		Validate.notNull(groupService, "Requires to set GroupService");*/
-
 		try {
 			
 			if(source.getId() !=null && source.getId()>0){
@@ -75,12 +67,7 @@ public class CustomerPopulator extends
 			  target.setPassword(passwordEncoder.encode(source.getPassword()));
 			  target.setAnonymous(false);
 			}
-			
-/*		    if(!StringUtils.isBlank(source.getEncodedPassword())) {
-				target.setPassword(source.getEncodedPassword());
-				target.setAnonymous(false);
-			}*/
-		    
+
 		    target.setProvider(source.getProvider());
 
 			target.setEmailAddress(source.getEmailAddress());
@@ -230,10 +217,10 @@ public class CustomerPopulator extends
 			}
 			
 			if(target.getDefaultLanguage()==null) {
-				Language lang = languageService.getByCode(source.getLanguage());
-				if(lang==null) {
-					lang = store.getDefaultLanguage();
-				}
+
+				Language lang = source.getLanguage() == null ?
+						null : languageService.getByCode(source.getLanguage());
+
 				
 				target.setDefaultLanguage(lang);
 			}
@@ -254,52 +241,5 @@ public class CustomerPopulator extends
 		return new Customer();
 	}
 
-/*	public void setCustomerOptionService(CustomerOptionService customerOptionService) {
-		this.customerOptionService = customerOptionService;
-	}
-
-	public CustomerOptionService getCustomerOptionService() {
-		return customerOptionService;
-	}
-
-	public void setCustomerOptionValueService(CustomerOptionValueService customerOptionValueService) {
-		this.customerOptionValueService = customerOptionValueService;
-	}
-
-	public CustomerOptionValueService getCustomerOptionValueService() {
-		return customerOptionValueService;
-	}
-
-	public CountryService getCountryService() {
-		return countryService;
-	}
-
-	public void setCountryService(CountryService countryService) {
-		this.countryService = countryService;
-	}
-
-	public ZoneService getZoneService() {
-		return zoneService;
-	}
-
-	public void setZoneService(ZoneService zoneService) {
-		this.zoneService = zoneService;
-	}
-
-	public LanguageService getLanguageService() {
-		return languageService;
-	}
-
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
-	}
-	
-	public GroupService getGroupService() {
-		return groupService;
-	}
-
-	public void setGroupService(GroupService groupService) {
-		this.groupService = groupService;
-	}*/
 
 }

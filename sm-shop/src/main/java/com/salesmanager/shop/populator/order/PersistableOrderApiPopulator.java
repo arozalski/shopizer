@@ -1,8 +1,21 @@
 package com.salesmanager.shop.populator.order;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import com.salesmanager.core.business.exception.ConversionException;
+import com.salesmanager.core.business.services.catalog.product.ProductService;
+import com.salesmanager.core.business.services.catalog.product.attribute.ProductAttributeService;
+import com.salesmanager.core.business.services.catalog.product.file.DigitalProductService;
 import com.salesmanager.core.business.services.customer.CustomerService;
 import com.salesmanager.core.business.services.reference.currency.CurrencyService;
+import com.salesmanager.core.business.services.shoppingcart.ShoppingCartService;
 import com.salesmanager.core.business.utils.AbstractDataPopulator;
 import com.salesmanager.core.model.common.Billing;
 import com.salesmanager.core.model.common.Delivery;
@@ -21,15 +34,6 @@ import com.salesmanager.shop.model.order.PersistableAnonymousOrderApi;
 import com.salesmanager.shop.model.order.PersistableOrderApi;
 import com.salesmanager.shop.populator.customer.CustomerPopulator;
 import com.salesmanager.shop.utils.LocaleUtils;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class PersistableOrderApiPopulator extends AbstractDataPopulator<PersistableOrderApi, Order> {

@@ -9,6 +9,7 @@ import com.salesmanager.shop.model.catalog.product.type.ReadableProductType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import com.salesmanager.shop.model.catalog.product.type.ReadableProductType;
 
 
 public class ReadableProduct extends ProductEntity implements Serializable {

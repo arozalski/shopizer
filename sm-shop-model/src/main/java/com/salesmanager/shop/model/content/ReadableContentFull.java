@@ -1,9 +1,9 @@
 package com.salesmanager.shop.model.content;
 
-import com.salesmanager.shop.model.entity.Entity;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.salesmanager.shop.model.entity.Entity;
 
 public class ReadableContentFull extends Entity {
 	

@@ -1,5 +1,9 @@
 package com.salesmanager.shop.mapper.catalog;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.stereotype.Component;
 import com.salesmanager.core.model.catalog.product.attribute.ProductOption;
 import com.salesmanager.core.model.catalog.product.attribute.ProductOptionDescription;
 import com.salesmanager.core.model.merchant.MerchantStore;
@@ -7,11 +11,6 @@ import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.mapper.Mapper;
 import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionEntity;
 import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProductOptionFull;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class ReadableProductOptionMapper implements Mapper<ProductOption, ReadableProductOptionEntity> {

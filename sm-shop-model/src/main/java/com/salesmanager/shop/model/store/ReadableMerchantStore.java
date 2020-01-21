@@ -1,13 +1,13 @@
 package com.salesmanager.shop.model.store;
 
+import java.io.Serializable;
+import java.util.List;
+
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.content.ReadableImage;
 import com.salesmanager.shop.model.entity.ReadableAudit;
 import com.salesmanager.shop.model.entity.ReadableAuditable;
 import com.salesmanager.shop.model.references.ReadableAddress;
-
-import java.io.Serializable;
-import java.util.List;
 
 public class ReadableMerchantStore extends MerchantStoreEntity implements ReadableAuditable, Serializable {
 	

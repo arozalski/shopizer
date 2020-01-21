@@ -1,10 +1,11 @@
 package com.salesmanager.core.business.repositories.catalog.product.attribute;
 
-import com.salesmanager.core.model.catalog.product.attribute.ProductOptionValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+
+import com.salesmanager.core.model.catalog.product.attribute.ProductOptionValue;
 
 public interface PageableProductOptionValueRepository extends PagingAndSortingRepository<ProductOptionValue, Long> {
 

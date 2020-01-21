@@ -1,8 +1,8 @@
 package com.salesmanager.shop.model.catalog.category;
 
-import com.salesmanager.shop.model.catalog.NamedEntity;
-
 import java.io.Serializable;
+
+import com.salesmanager.shop.model.catalog.NamedEntity;
 
 
 

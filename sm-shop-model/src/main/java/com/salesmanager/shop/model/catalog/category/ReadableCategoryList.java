@@ -1,9 +1,8 @@
 package com.salesmanager.shop.model.catalog.category;
 
-import com.salesmanager.shop.model.entity.ReadableList;
-
 import java.util.ArrayList;
 import java.util.List;
+import com.salesmanager.shop.model.entity.ReadableList;
 
 public class ReadableCategoryList extends ReadableList {
 

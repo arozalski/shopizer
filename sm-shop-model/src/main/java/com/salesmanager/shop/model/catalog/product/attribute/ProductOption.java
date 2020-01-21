@@ -1,8 +1,7 @@
 package com.salesmanager.shop.model.catalog.product.attribute;
 
-import com.salesmanager.shop.model.entity.Entity;
-
 import java.io.Serializable;
+import com.salesmanager.shop.model.entity.Entity;
 
 
 public class ProductOption extends Entity implements Serializable {

@@ -1,14 +1,15 @@
 package com.salesmanager.test.shipping;
 
+import javax.inject.Inject;
+
+import org.junit.Ignore;
+
 import com.salesmanager.core.model.common.Delivery;
 import com.salesmanager.core.model.reference.country.Country;
 import com.salesmanager.core.model.reference.zone.Zone;
 import com.salesmanager.core.model.shipping.ShippingOrigin;
 import com.salesmanager.core.model.shipping.ShippingQuote;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuotePrePostProcessModule;
-import org.junit.Ignore;
-
-import javax.inject.Inject;
 
 @Ignore
 public class ShippingDistanceProcessorTest {

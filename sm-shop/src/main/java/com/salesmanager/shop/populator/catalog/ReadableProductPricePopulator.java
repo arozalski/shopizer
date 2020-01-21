@@ -1,5 +1,9 @@
 package com.salesmanager.shop.populator.catalog;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.lang.Validate;
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.services.catalog.product.PricingService;
 import com.salesmanager.core.business.utils.AbstractDataPopulator;
@@ -8,13 +12,9 @@ import com.salesmanager.core.model.catalog.product.price.ProductPrice;
 import com.salesmanager.core.model.catalog.product.price.ProductPriceDescription;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
+import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturerFull;
 import com.salesmanager.shop.model.catalog.product.ReadableProductPrice;
 import com.salesmanager.shop.model.catalog.product.ReadableProductPriceFull;
-import org.apache.commons.lang.Validate;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 
 

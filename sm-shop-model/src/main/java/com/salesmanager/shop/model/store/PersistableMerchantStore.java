@@ -1,8 +1,8 @@
 package com.salesmanager.shop.model.store;
 
-import com.salesmanager.shop.model.references.PersistableAddress;
-
 import java.util.List;
+
+import com.salesmanager.shop.model.references.PersistableAddress;
 
 public class PersistableMerchantStore extends MerchantStoreEntity {
 	

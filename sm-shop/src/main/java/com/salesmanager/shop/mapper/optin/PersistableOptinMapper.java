@@ -1,12 +1,12 @@
 package com.salesmanager.shop.mapper.optin;
 
+import org.springframework.stereotype.Component;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.system.optin.Optin;
 import com.salesmanager.core.model.system.optin.OptinType;
 import com.salesmanager.shop.mapper.Mapper;
 import com.salesmanager.shop.model.system.PersistableOptin;
-import org.springframework.stereotype.Component;
 
 @Component
 public class PersistableOptinMapper implements Mapper<PersistableOptin, Optin> {

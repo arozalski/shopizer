@@ -1,5 +1,12 @@
 package com.salesmanager.shop.mapper.inventory;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import org.jsoup.helper.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import com.salesmanager.core.business.constants.Constants;
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.exception.ServiceException;
@@ -15,14 +22,6 @@ import com.salesmanager.shop.model.catalog.product.inventory.PersistableInventor
 import com.salesmanager.shop.store.api.exception.ConversionRuntimeException;
 import com.salesmanager.shop.utils.DateUtil;
 import io.searchbox.strings.StringUtils;
-import org.jsoup.helper.Validate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class PersistableInventoryMapper implements Mapper<PersistableInventory, ProductAvailability> {

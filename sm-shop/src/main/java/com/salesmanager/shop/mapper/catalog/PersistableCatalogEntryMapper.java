@@ -1,5 +1,9 @@
 package com.salesmanager.shop.mapper.catalog;
 
+import org.apache.commons.lang.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.salesmanager.core.model.catalog.catalog.Catalog;
 import com.salesmanager.core.model.catalog.catalog.CatalogEntry;
 import com.salesmanager.core.model.catalog.category.Category;
@@ -12,9 +16,6 @@ import com.salesmanager.shop.store.api.exception.ConversionRuntimeException;
 import com.salesmanager.shop.store.controller.catalog.facade.CatalogFacade;
 import com.salesmanager.shop.store.controller.category.facade.CategoryFacade;
 import com.salesmanager.shop.store.controller.product.facade.ProductFacade;
-import org.apache.commons.lang.Validate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class PersistableCatalogEntryMapper implements Mapper<PersistableCatalogEntry, CatalogEntry> {

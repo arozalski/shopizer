@@ -1,9 +1,24 @@
 package com.salesmanager.core.business.modules.integration.shipping.impl;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import com.google.maps.DistanceMatrixApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
-import com.google.maps.model.*;
+import com.google.maps.model.Distance;
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.DistanceMatrixRow;
+import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
 import com.salesmanager.core.model.common.Delivery;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.shipping.PackageDetails;
@@ -15,16 +30,6 @@ import com.salesmanager.core.model.system.IntegrationModule;
 import com.salesmanager.core.modules.constants.Constants;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuotePrePostProcessModule;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Uses google api to get lng, lat and distance in km for a given delivery address

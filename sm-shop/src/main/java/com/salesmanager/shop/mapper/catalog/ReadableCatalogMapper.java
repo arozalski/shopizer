@@ -1,5 +1,8 @@
 package com.salesmanager.shop.mapper.catalog;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.salesmanager.core.model.catalog.catalog.Catalog;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
@@ -8,8 +11,6 @@ import com.salesmanager.shop.model.catalog.catalog.ReadableCatalog;
 import com.salesmanager.shop.model.store.ReadableMerchantStore;
 import com.salesmanager.shop.store.controller.store.facade.StoreFacade;
 import com.salesmanager.shop.utils.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class ReadableCatalogMapper implements Mapper<Catalog, ReadableCatalog> {

@@ -1,13 +1,13 @@
 package com.salesmanager.test.catalog;
 
+import org.junit.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer;
 import com.salesmanager.core.model.catalog.product.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
-import org.junit.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.util.Assert;
 
 
 public class ManufacturerTest extends com.salesmanager.test.common.AbstractSalesManagerCoreTestCase {

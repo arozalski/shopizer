@@ -1,5 +1,15 @@
 package com.salesmanager.shop.populator.store;
 
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.springframework.stereotype.Component;
+
 import com.salesmanager.core.business.constants.Constants;
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.exception.ServiceException;
@@ -16,13 +26,7 @@ import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.reference.zone.Zone;
 import com.salesmanager.shop.model.references.PersistableAddress;
 import com.salesmanager.shop.model.store.PersistableMerchantStore;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.springframework.stereotype.Component;
-
-import javax.inject.Inject;
-import java.util.List;
+import com.salesmanager.shop.utils.DateUtil;
 
 @Component
 public class PersistableMerchantStorePopulator extends AbstractDataPopulator<PersistableMerchantStore, MerchantStore> {
@@ -53,7 +57,16 @@ public class PersistableMerchantStorePopulator extends AbstractDataPopulator<Per
 		if(source.getId()!=0) {
 			target.setId(source.getId());
 		}
-		target.setDateBusinessSince(source.getInBusinessSince());
+		
+		if(!StringUtils.isEmpty(source.getInBusinessSince())) {
+			try {
+				Date dt = DateUtil.getDate(source.getInBusinessSince());
+				target.setInBusinessSince(dt);
+			} catch(Exception e) {
+				throw new ConversionException("Cannot parse date [" + source.getInBusinessSince() + "]",e);
+			}
+		}
+
 		if(source.getDimension()!=null) {
 		  target.setSeizeunitcode(source.getDimension().name());
 		}

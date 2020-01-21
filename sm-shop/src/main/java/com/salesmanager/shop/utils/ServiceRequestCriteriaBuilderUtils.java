@@ -1,14 +1,16 @@
 package com.salesmanager.shop.utils;
 
-import com.salesmanager.core.model.common.Criteria;
-import com.salesmanager.core.model.common.CriteriaOrderBy;
-import com.salesmanager.core.model.merchant.MerchantStoreCriteria;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import com.salesmanager.core.model.common.Criteria;
+import com.salesmanager.core.model.common.CriteriaOrderBy;
+import com.salesmanager.core.model.merchant.MerchantStoreCriteria;
 
 public class ServiceRequestCriteriaBuilderUtils {
 	

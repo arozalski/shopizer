@@ -1,5 +1,10 @@
 package com.salesmanager.shop.store.facade.product;
 
+import org.apache.commons.lang3.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.catalog.product.ProductService;
 import com.salesmanager.core.business.services.catalog.product.availability.ProductAvailabilityService;
@@ -16,11 +21,6 @@ import com.salesmanager.shop.model.catalog.product.inventory.ReadableInventoryLi
 import com.salesmanager.shop.store.api.exception.ResourceNotFoundException;
 import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
 import com.salesmanager.shop.store.controller.product.facade.ProductInventoryFacade;
-import org.apache.commons.lang3.Validate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
 @Service("productInventoryFacade")
 @Profile({"default", "cloud", "gcp", "aws"})

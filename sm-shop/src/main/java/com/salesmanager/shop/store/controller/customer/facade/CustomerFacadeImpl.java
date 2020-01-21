@@ -3,6 +3,30 @@
  */
 package com.salesmanager.shop.store.controller.customer.facade;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.modules.email.Email;
@@ -36,33 +60,32 @@ import com.salesmanager.core.model.user.Permission;
 import com.salesmanager.shop.admin.model.userpassword.UserReset;
 import com.salesmanager.shop.constants.Constants;
 import com.salesmanager.shop.constants.EmailConstants;
-import com.salesmanager.shop.model.customer.*;
+import com.salesmanager.shop.model.customer.CustomerEntity;
+import com.salesmanager.shop.model.customer.PersistableCustomer;
+import com.salesmanager.shop.model.customer.PersistableCustomerReview;
+import com.salesmanager.shop.model.customer.ReadableCustomer;
+import com.salesmanager.shop.model.customer.ReadableCustomerReview;
+import com.salesmanager.shop.model.customer.UserAlreadyExistException;
 import com.salesmanager.shop.model.customer.address.Address;
 import com.salesmanager.shop.model.customer.optin.PersistableCustomerOptin;
-import com.salesmanager.shop.populator.customer.*;
+import com.salesmanager.shop.populator.customer.CustomerBillingAddressPopulator;
+import com.salesmanager.shop.populator.customer.CustomerDeliveryAddressPopulator;
+import com.salesmanager.shop.populator.customer.CustomerEntityPopulator;
+import com.salesmanager.shop.populator.customer.CustomerPopulator;
+import com.salesmanager.shop.populator.customer.PersistableCustomerBillingAddressPopulator;
+import com.salesmanager.shop.populator.customer.PersistableCustomerReviewPopulator;
+import com.salesmanager.shop.populator.customer.PersistableCustomerShippingAddressPopulator;
+import com.salesmanager.shop.populator.customer.ReadableCustomerList;
+import com.salesmanager.shop.populator.customer.ReadableCustomerPopulator;
+import com.salesmanager.shop.populator.customer.ReadableCustomerReviewPopulator;
 import com.salesmanager.shop.store.api.exception.ConversionRuntimeException;
 import com.salesmanager.shop.store.api.exception.ResourceNotFoundException;
 import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
-import com.salesmanager.shop.utils.*;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.salesmanager.shop.utils.EmailTemplatesUtils;
+import com.salesmanager.shop.utils.EmailUtils;
+import com.salesmanager.shop.utils.ImageFilePath;
+import com.salesmanager.shop.utils.LabelUtils;
+import com.salesmanager.shop.utils.LocaleUtils;
 
 
 /**
@@ -993,7 +1016,7 @@ public class CustomerFacadeImpl implements CustomerFacade {
   public void deleteById(Long id) {
     Customer customer = getCustomerById(id);
     delete(customer);
-    
+
   }
 
 
@@ -1005,7 +1028,7 @@ public class CustomerFacadeImpl implements CustomerFacade {
     Validate.notNull(customer.getBilling().getPostalCode(), "Billing postal code can not be null");
     Validate.notNull(customer.getBilling().getCountryCode(), "Billing country can not be null");
     customer.getBilling().setBillingAddress(true);
-    
+
     if(customer.getDelivery() == null) {
       customer.setDelivery(customer.getBilling());
       customer.getDelivery().setBillingAddress(false);
@@ -1015,9 +1038,9 @@ public class CustomerFacadeImpl implements CustomerFacade {
       Validate.notNull(customer.getDelivery().getCity(), "Delivery city can not be null");
       Validate.notNull(customer.getDelivery().getPostalCode(), "Delivery postal code can not be null");
       Validate.notNull(customer.getDelivery().getCountryCode(), "Delivery country can not be null");
-      
+
     }
-    
+
     try {
       //update billing
       updateAddress(customer.getId(), store, customer.getBilling(), store.getDefaultLanguage());
@@ -1026,19 +1049,19 @@ public class CustomerFacadeImpl implements CustomerFacade {
     } catch (Exception e) {
       throw new ServiceRuntimeException("Error while updating customer address");
     }
-    
+
 
   }
 
 
   @Override
   public void updateAddress(String userName, PersistableCustomer customer, MerchantStore store) {
-    
+
     ReadableCustomer customerModel = getByUserName(userName, store, store.getDefaultLanguage());
     customer.setId(customerModel.getId());
     customer.setUserName(userName);
     updateAddress(customer, store);
-    
+
   }
 
 
@@ -1067,6 +1090,6 @@ public class CustomerFacadeImpl implements CustomerFacade {
     } catch (ServiceException e) {
       throw new ServiceRuntimeException("Exception while changing password", e);
     }
-    
+
   }
 }

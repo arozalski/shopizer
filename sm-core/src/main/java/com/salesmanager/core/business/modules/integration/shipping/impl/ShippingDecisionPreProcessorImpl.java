@@ -1,5 +1,19 @@
 package com.salesmanager.core.business.modules.integration.shipping.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import javax.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.io.ResourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.salesmanager.core.business.configuration.DroolsBeanFactory;
 import com.salesmanager.core.model.common.Delivery;
 import com.salesmanager.core.model.merchant.MerchantStore;
@@ -12,18 +26,6 @@ import com.salesmanager.core.model.system.IntegrationModule;
 import com.salesmanager.core.modules.constants.Constants;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuotePrePostProcessModule;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.io.ResourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Decides which shipping method is going to be used based on a decision table

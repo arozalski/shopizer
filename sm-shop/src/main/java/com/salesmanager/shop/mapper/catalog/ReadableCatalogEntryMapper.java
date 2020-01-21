@@ -1,5 +1,9 @@
 package com.salesmanager.shop.mapper.catalog;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.services.catalog.product.PricingService;
 import com.salesmanager.core.model.catalog.catalog.CatalogEntry;
@@ -12,9 +16,6 @@ import com.salesmanager.shop.model.catalog.product.ReadableProduct;
 import com.salesmanager.shop.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.shop.store.api.exception.ConversionRuntimeException;
 import com.salesmanager.shop.utils.ImageFilePath;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 @Component
 public class ReadableCatalogEntryMapper implements Mapper<CatalogEntry, ReadableCatalogEntry> {

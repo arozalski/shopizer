@@ -1,10 +1,11 @@
 package com.salesmanager.core.business.repositories.catalog.catalog;
 
-import com.salesmanager.core.model.catalog.catalog.CatalogEntry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+
+import com.salesmanager.core.model.catalog.catalog.CatalogEntry;
 
 public interface PageableCatalogEntryRepository extends PagingAndSortingRepository<CatalogEntry, Long> {
 

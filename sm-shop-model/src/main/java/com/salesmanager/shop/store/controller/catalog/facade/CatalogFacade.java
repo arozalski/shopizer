@@ -1,11 +1,16 @@
 package com.salesmanager.shop.store.controller.catalog.facade;
 
+import java.util.Optional;
+
 import com.salesmanager.core.model.catalog.catalog.Catalog;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
-import com.salesmanager.shop.model.catalog.catalog.*;
-
-import java.util.Optional;
+import com.salesmanager.shop.model.catalog.catalog.PersistableCatalog;
+import com.salesmanager.shop.model.catalog.catalog.PersistableCatalogEntry;
+import com.salesmanager.shop.model.catalog.catalog.ReadableCatalog;
+import com.salesmanager.shop.model.catalog.catalog.ReadableCatalogEntry;
+import com.salesmanager.shop.model.catalog.catalog.ReadableCatalogEntryList;
+import com.salesmanager.shop.model.catalog.catalog.ReadableCatalogList;
 
 public interface CatalogFacade {
 	

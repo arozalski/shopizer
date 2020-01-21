@@ -1,5 +1,11 @@
 package com.salesmanager.shop.mapper.inventory;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.helper.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.services.catalog.product.PricingService;
 import com.salesmanager.core.business.services.reference.country.CountryService;
@@ -16,13 +22,6 @@ import com.salesmanager.shop.populator.catalog.ReadableProductPricePopulator;
 import com.salesmanager.shop.populator.store.ReadableMerchantStorePopulator;
 import com.salesmanager.shop.store.api.exception.ConversionRuntimeException;
 import com.salesmanager.shop.utils.DateUtil;
-import org.jsoup.helper.Validate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class ReadableInventoryMapper implements Mapper<ProductAvailability, ReadableInventory> {

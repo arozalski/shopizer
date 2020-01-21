@@ -1,5 +1,15 @@
 package com.salesmanager.shop.populator.catalog;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.services.catalog.product.PricingService;
 import com.salesmanager.core.business.utils.AbstractDataPopulator;
@@ -18,7 +28,11 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.catalog.category.ReadableCategory;
 import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
-import com.salesmanager.shop.model.catalog.product.*;
+import com.salesmanager.shop.model.catalog.product.ProductSpecification;
+import com.salesmanager.shop.model.catalog.product.ReadableImage;
+import com.salesmanager.shop.model.catalog.product.ReadableProduct;
+import com.salesmanager.shop.model.catalog.product.ReadableProductFull;
+import com.salesmanager.shop.model.catalog.product.RentalOwner;
 import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductAttribute;
 import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductAttributeValue;
 import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductOption;
@@ -26,11 +40,6 @@ import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProduct
 import com.salesmanager.shop.model.catalog.product.type.ReadableProductType;
 import com.salesmanager.shop.utils.DateUtil;
 import com.salesmanager.shop.utils.ImageFilePath;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.*;
 
 
 
@@ -77,18 +86,18 @@ public class ReadableProductPopulator extends
 		Validate.notNull(imageUtils, "Requires to set imageUtils");
 		
 		try {
-
+		  
 	        List<com.salesmanager.shop.model.catalog.product.ProductDescription> fulldescriptions = new ArrayList<com.salesmanager.shop.model.catalog.product.ProductDescription>();
 	        if(language == null) {
 	          target = new ReadableProductFull();
 	        }
-
+	        
 	        if(target==null) {
 	        	target = new ReadableProduct();
 	        }
-
+	        
 	        ProductDescription description = source.getProductDescription();
-
+	        
 	        if(source.getDescriptions()!=null && source.getDescriptions().size()>0) {
 	          for(ProductDescription desc : source.getDescriptions()) {
                 if(language != null && desc.getLanguage()!=null && desc.getLanguage().getId().intValue() == language.getId().intValue()) {
@@ -99,15 +108,15 @@ public class ReadableProductPopulator extends
                 }
               }
 	        }
-
+	        
 		     if(target instanceof ReadableProductFull) {
 		          ((ReadableProductFull)target).setDescriptions(fulldescriptions);
 		      }
-
+		     
 		        if(language == null) {
 			          language = store.getDefaultLanguage();
 			    }
-
+			
 
 
 	
@@ -135,8 +144,8 @@ public class ReadableProductPopulator extends
 				readableType.setName(source.getType().getCode());
 				target.setType(readableType);
 			}
-
-
+			
+			
 			//RENTAL
 			if(source.getRentalDuration()!=null) {
 				target.setRentalDuration(source.getRentalDuration());
@@ -227,7 +236,7 @@ public class ReadableProductPopulator extends
 			  type.setName(source.getType().getCode());//need name
 			  target.setType(type);
 			}
-
+			
 			Set<ProductImage> images = source.getImages();
 			if(images!=null && images.size()>0) {
 				List<ReadableImage> imageList = new ArrayList<ReadableImage>();
@@ -433,19 +442,19 @@ public class ReadableProductPopulator extends
 			target.setSku(source.getSku());
 	
 			FinalPrice price = pricingService.calculateProductPrice(source);
-
+			
 			if(price != null) {
 
 				target.setFinalPrice(pricingService.getDisplayAmount(price.getFinalPrice(), store));
 				target.setPrice(price.getFinalPrice());
-				target.setOriginalPrice(price.getOriginalPrice());
-
+				target.setOriginalPrice(pricingService.getDisplayAmount(price.getOriginalPrice(), store));
+				
 				if(price.isDiscounted()) {
 					target.setDiscounted(true);
 				}
 			
 			}
-
+	
 
 			//availability
 			for(ProductAvailability availability : source.getAvailabilities()) {
@@ -460,7 +469,7 @@ public class ReadableProductPopulator extends
 			}
 			
 
-
+			
 			return target;
 		
 		} catch (Exception e) {
@@ -469,7 +478,7 @@ public class ReadableProductPopulator extends
 	}
 	
 
-
+	
 	private ReadableProductOption createOption(ProductAttribute productAttribute, Language language) {
 		
 
@@ -544,12 +553,12 @@ public class ReadableProductPopulator extends
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
     com.salesmanager.shop.model.catalog.product.ProductDescription populateDescription(ProductDescription description) {
       if(description == null) {
         return null;
       }
-
+     
       com.salesmanager.shop.model.catalog.product.ProductDescription tragetDescription = new com.salesmanager.shop.model.catalog.product.ProductDescription();
       tragetDescription.setFriendlyUrl(description.getSeUrl());
       tragetDescription.setName(description.getName());

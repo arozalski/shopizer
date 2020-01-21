@@ -1,5 +1,18 @@
 package com.salesmanager.core.business.services.catalog.category;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import com.salesmanager.core.business.constants.Constants;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.repositories.catalog.category.CategoryRepository;
@@ -11,16 +24,6 @@ import com.salesmanager.core.model.catalog.category.CategoryDescription;
 import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.*;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Category>
@@ -34,7 +37,7 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 
   @Inject
   private ProductService productService;
-  
+
   @Inject
   private PageableCategoryRepository pageableCategoryRepository;
 

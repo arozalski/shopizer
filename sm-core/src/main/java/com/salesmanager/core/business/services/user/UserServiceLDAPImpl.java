@@ -1,13 +1,14 @@
 package com.salesmanager.core.business.services.user;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.model.common.Criteria;
 import com.salesmanager.core.model.common.GenericEntityList;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.user.User;
-import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 public class UserServiceLDAPImpl implements UserService {
 
