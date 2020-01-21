@@ -164,7 +164,7 @@ class WishProductsStore {
     companion object {
         private const val HALF_HOUR_IN_MS = 1800000L
         private const val ONE_HOUR_IN_MS = HALF_HOUR_IN_MS * 2
-        private val SLEEP_TIME_RANGE = LongRange(0, 0)
+        private val SLEEP_TIME_RANGE = LongRange(0, HALF_HOUR_IN_MS)
         private const val PRODUCT_COUNT = 70
         private const val PRODUCT_OFFSET = 0
         private val LOGGER = LoggerFactory.getLogger(WishProductsStore::class.java)
