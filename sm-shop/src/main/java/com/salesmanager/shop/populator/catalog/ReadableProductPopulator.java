@@ -1,15 +1,5 @@
 package com.salesmanager.shop.populator.catalog;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang3.StringUtils;
-
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.services.catalog.product.PricingService;
 import com.salesmanager.core.business.utils.AbstractDataPopulator;
@@ -28,11 +18,7 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.catalog.category.ReadableCategory;
 import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
-import com.salesmanager.shop.model.catalog.product.ProductSpecification;
-import com.salesmanager.shop.model.catalog.product.ReadableImage;
-import com.salesmanager.shop.model.catalog.product.ReadableProduct;
-import com.salesmanager.shop.model.catalog.product.ReadableProductFull;
-import com.salesmanager.shop.model.catalog.product.RentalOwner;
+import com.salesmanager.shop.model.catalog.product.*;
 import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductAttribute;
 import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductAttributeValue;
 import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductOption;
@@ -40,6 +26,11 @@ import com.salesmanager.shop.model.catalog.product.attribute.api.ReadableProduct
 import com.salesmanager.shop.model.catalog.product.type.ReadableProductType;
 import com.salesmanager.shop.utils.DateUtil;
 import com.salesmanager.shop.utils.ImageFilePath;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 
 
@@ -447,7 +438,7 @@ public class ReadableProductPopulator extends
 
 				target.setFinalPrice(pricingService.getDisplayAmount(price.getFinalPrice(), store));
 				target.setPrice(price.getFinalPrice());
-				target.setOriginalPrice(pricingService.getDisplayAmount(price.getOriginalPrice(), store));
+				target.setOriginalPrice(price.getOriginalPrice());
 				
 				if(price.isDiscounted()) {
 					target.setDiscounted(true);
