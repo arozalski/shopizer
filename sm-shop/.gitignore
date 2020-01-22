@@ -1,2 +1,3 @@
 /target/
 /src/main/resources/database.properties
+.DS_Store
