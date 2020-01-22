@@ -8,11 +8,15 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.salesmanager.core.business.constants.Constants;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.repositories.catalog.category.CategoryRepository;
+import com.salesmanager.core.business.repositories.catalog.category.PageableCategoryRepository;
 import com.salesmanager.core.business.services.catalog.product.ProductService;
 import com.salesmanager.core.business.services.common.generic.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.model.catalog.category.Category;
@@ -33,6 +37,9 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 
   @Inject
   private ProductService productService;
+  
+  @Inject
+  private PageableCategoryRepository pageableCategoryRepository;
 
 
 
@@ -51,10 +58,10 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
       //get parent category
       Category p = this.getById(parent.getId());
 
-      lineage.append(p.getLineage()).append(category.getId()).append(Constants.SLASH);
+      lineage.append(p.getLineage()).append(category.getId());
       category.setDepth(p.getDepth() + 1);
     } else {
-      lineage.append("/").append(category.getId()).append(Constants.SLASH);
+      lineage.append("/").append(category.getId());
       category.setDepth(0);
     }
     category.setLineage(lineage.toString());
@@ -384,11 +391,6 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
   }
 
   @Override
-  public List<Category> getListByDepth(MerchantStore store, int depth, Language language) {
-    return categoryRepository.findByDepth(store.getId(), depth, language.getId());
-  }
-
-  @Override
   public List<Category> getListByDepthFilterByFeatured(MerchantStore store, int depth,
       Language language) {
     return categoryRepository.findByDepthFilterByFeatured(store.getId(), depth, language.getId());
@@ -440,6 +442,22 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
     return categoryRepository.findById(category);
   }
 
+  @Override
+  public Page<Category> getListByDepth(MerchantStore store, Language language, String name,
+      int depth, int page, int count) {
+    Pageable pageRequest = new PageRequest(page, count);
+    return pageableCategoryRepository.listByStore(store.getId(), language.getId(), name, pageRequest);
+  }
+
+  @Override
+  public List<Category> getListByDepth(MerchantStore store, int depth, Language language) {
+    return categoryRepository.find(store.getId(), depth, language.getId(), null);
+  }
+
+  @Override
+  public int count(MerchantStore store) {
+    return categoryRepository.count(store.getId());
+  }
 
 
 }

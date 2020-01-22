@@ -1,12 +1,14 @@
 package com.salesmanager.shop.store.controller.category.facade;
 
+import java.util.List;
 import com.salesmanager.core.model.catalog.category.Category;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.catalog.category.PersistableCategory;
 import com.salesmanager.shop.model.catalog.category.ReadableCategory;
+import com.salesmanager.shop.model.catalog.category.ReadableCategoryList;
 import com.salesmanager.shop.model.catalog.product.attribute.ReadableProductVariant;
-import java.util.List;
+import com.salesmanager.shop.model.entity.ListCriteria;
 
 public interface CategoryFacade {
 
@@ -17,9 +19,11 @@ public interface CategoryFacade {
      * @param depth
      * @param language
      * @param filter
-     * @return List<ReadableCategory>
+     * @param page
+     * @param count
+     * @return ReadableCategoryList
      */
-	List<ReadableCategory> getCategoryHierarchy(MerchantStore store, int depth, Language language, List<String> filter);
+	ReadableCategoryList getCategoryHierarchy(MerchantStore store, ListCriteria criteria, int depth, Language language, List<String> filter, int page, int count);
 	
 	/**
 	 * 
@@ -48,6 +52,8 @@ public interface CategoryFacade {
 	 */
 	ReadableCategory getByCode(MerchantStore store, String code, Language language) throws Exception;
 
+	Category getByCode(String code, MerchantStore store);
+	
 	void deleteCategory(Long categoryId);
 
 	void deleteCategory(Category category);
@@ -78,4 +84,11 @@ public interface CategoryFacade {
 	 * @param store
 	 */
 	void move(Long child, Long parent, MerchantStore store);
+	
+	/**
+	 * Set category visible or not
+	 * @param category
+	 * @param store
+	 */
+	void setVisible(PersistableCategory category, MerchantStore store);
 }

@@ -22,7 +22,7 @@ import com.salesmanager.shop.model.catalog.manufacturer.ManufacturerDescription;
 import com.salesmanager.shop.model.catalog.manufacturer.PersistableManufacturer;
 import com.salesmanager.shop.model.catalog.product.PersistableProduct;
 import com.salesmanager.shop.model.catalog.product.ProductDescription;
-import com.salesmanager.shop.model.shop.ReadableMerchantStore;
+import com.salesmanager.shop.model.store.ReadableMerchantStore;
 import com.salesmanager.shop.populator.customer.ReadableCustomerList;
 import com.salesmanager.shop.store.security.AuthenticationRequest;
 import com.salesmanager.shop.store.security.AuthenticationResponse;
@@ -35,7 +35,7 @@ public abstract class ServicesTestSupport {
     protected TestRestTemplate testRestTemplate;
 
     protected HttpHeaders getHeader() {
-        return getHeader("admin", "password");
+        return getHeader("admin@shopizer.com", "password");
     }
 
     protected HttpHeaders getHeader(final String userName, final String password) {

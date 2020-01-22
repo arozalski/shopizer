@@ -23,7 +23,7 @@ import com.salesmanager.core.model.reference.zone.Zone;
 import com.salesmanager.shop.model.content.ReadableImage;
 import com.salesmanager.shop.model.entity.ReadableAudit;
 import com.salesmanager.shop.model.references.ReadableAddress;
-import com.salesmanager.shop.model.shop.ReadableMerchantStore;
+import com.salesmanager.shop.model.store.ReadableMerchantStore;
 import com.salesmanager.shop.utils.DateUtil;
 import com.salesmanager.shop.utils.ImageFilePath;
 
@@ -74,6 +74,13 @@ public class ReadableMerchantStorePopulator extends
 			}
 		}
 		
+		if(source.getParent() != null) {
+		  ReadableMerchantStore parent = populate(source.getParent(),
+            new ReadableMerchantStore(), source, language);
+		  target.setParent(parent);
+		}
+		target.setRetailer(source.isRetailer()!=null?source.isRetailer().booleanValue():false);
+		
 		target.setDimension(MeasureUnit.valueOf(source.getSeizeunitcode()));
 		target.setWeight(MeasureUnit.valueOf(source.getWeightunitcode()));
 		
@@ -113,7 +120,7 @@ public class ReadableMerchantStorePopulator extends
 		target.setUseCache(source.isUseCache());
 		
 		
-		List<Language> languages = source.getLanguages();
+/*		List<Language> languages = source.getLanguages();
 		if(!CollectionUtils.isEmpty(languages)) {
 			
 			List<String> langs = new ArrayList<String>();
@@ -121,7 +128,15 @@ public class ReadableMerchantStorePopulator extends
 				langs.add(lang.getCode());
 			}
 			
-			target.setSupportedLanguages(langs);
+			//target.setSupportedLanguages(langs);
+		}*/
+		
+		if(!CollectionUtils.isEmpty(source.getLanguages())) {
+			List<Language> supported = new ArrayList<Language>();
+			for(Language lang : source.getLanguages()) {
+				supported.add(lang);
+			}
+			target.setSupportedLanguages(supported);
 		}
 		
 		if(source.getAuditSection()!=null) {

@@ -13,13 +13,16 @@ import javax.inject.Inject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.salesmanager.core.business.constants.Constants;
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.services.catalog.category.CategoryService;
 import com.salesmanager.core.business.services.catalog.product.attribute.ProductOptionService;
 import com.salesmanager.core.business.services.catalog.product.attribute.ProductOptionValueService;
 import com.salesmanager.core.business.services.catalog.product.manufacturer.ManufacturerService;
+import com.salesmanager.core.business.services.catalog.product.type.ProductTypeService;
 import com.salesmanager.core.business.services.customer.CustomerService;
 import com.salesmanager.core.business.services.reference.language.LanguageService;
 import com.salesmanager.core.business.services.tax.TaxClassService;
@@ -27,20 +30,19 @@ import com.salesmanager.core.business.utils.AbstractDataPopulator;
 import com.salesmanager.core.model.catalog.category.Category;
 import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.catalog.product.attribute.ProductAttribute;
-import com.salesmanager.core.model.catalog.product.attribute.ProductOption;
-import com.salesmanager.core.model.catalog.product.attribute.ProductOptionValue;
 import com.salesmanager.core.model.catalog.product.availability.ProductAvailability;
 import com.salesmanager.core.model.catalog.product.description.ProductDescription;
 import com.salesmanager.core.model.catalog.product.image.ProductImage;
 import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer;
 import com.salesmanager.core.model.catalog.product.price.ProductPrice;
 import com.salesmanager.core.model.catalog.product.price.ProductPriceDescription;
+import com.salesmanager.core.model.catalog.product.type.ProductType;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
+import com.salesmanager.shop.mapper.catalog.PersistableProductAttributeMapper;
 import com.salesmanager.shop.model.catalog.product.PersistableImage;
 import com.salesmanager.shop.model.catalog.product.PersistableProduct;
 import com.salesmanager.shop.model.catalog.product.ProductPriceEntity;
-import com.salesmanager.shop.model.catalog.product.ProductSpecification;
 import com.salesmanager.shop.utils.DateUtil;
 
 
@@ -62,6 +64,11 @@ public class PersistableProductPopulator extends
 	private ProductOptionValueService productOptionValueService;
 	@Inject
 	private CustomerService customerService;
+	@Autowired
+	private PersistableProductAttributeMapper persistableProductAttributeMapper;
+	
+	@Autowired
+	private ProductTypeService productTypeService;
 
 	
 
@@ -71,6 +78,8 @@ public class PersistableProductPopulator extends
 	public Product populate(PersistableProduct source,
 			Product target, MerchantStore store, Language language)
 			throws ConversionException {
+	  
+	    Validate.notNull(target,"Product must not be null");
 
 		try {
 
@@ -85,6 +94,22 @@ public class PersistableProductPopulator extends
 			}
 			
 			target.setCondition(source.getCondition());
+			
+			
+			//PRODUCT TYPE
+			if(!StringUtils.isBlank(source.getType())) {
+				ProductType type = productTypeService.getProductType(source.getType());
+				if(type == null) {
+					throw new ConversionException("Product type [" + source.getType() + "] does not exist");
+				}
+				
+				//TODO
+				//if(type.getMerchantStore().getId().intValue() != store.getId().intValue()) {
+				//	throw new ConversionException("Product type [" + source.getType() + "] does not exist for store [" + store.getCode() + "]");
+				//}
+				
+				target.setType(type);
+			}
 			
 			
 			//RENTAL
@@ -112,25 +137,28 @@ public class PersistableProductPopulator extends
 			if(!CollectionUtils.isEmpty(source.getDescriptions())) {
 				for(com.salesmanager.shop.model.catalog.product.ProductDescription description : source.getDescriptions()) {
 					
-					ProductDescription productDescription = new ProductDescription();
+				  ProductDescription productDescription = new ProductDescription();
+				  Language lang = languageService.getByCode(description.getLanguage());
+	              if(lang==null) {
+	                    throw new ConversionException("Language code " + description.getLanguage() + " is invalid, use ISO code (en, fr ...)");
+	               }
+				   if(!CollectionUtils.isEmpty(target.getDescriptions())) {
+				      for(ProductDescription desc : target.getDescriptions()) {
+				        if(desc.getLanguage().getCode().equals(description.getLanguage())) {
+				          productDescription = desc;
+				          break;
+				        }
+				      }
+				    }
+
 					productDescription.setProduct(target);
 					productDescription.setDescription(description.getDescription());
-					if(description.getId() != null && description.getId().longValue() ==0) {
-						productDescription.setId(null);
-					} else {
-						productDescription.setId(description.getId());
-					}
-					
+					productDescription.setProductHighlight(description.getHighlights());
 					productDescription.setName(description.getName());
 					productDescription.setSeUrl(description.getFriendlyUrl());
 					productDescription.setMetatagKeywords(description.getKeyWords());
 					productDescription.setMetatagDescription(description.getMetaDescription());
 					productDescription.setTitle(description.getTitle());
-					
-					Language lang = languageService.getByCode(description.getLanguage());
-					if(lang==null) {
-						throw new ConversionException("Language code " + description.getLanguage() + " is invalid, use ISO code (en, fr ...)");
-					}
 					
 					languages.add(lang);
 					productDescription.setLanguage(lang);
@@ -176,16 +204,14 @@ public class PersistableProductPopulator extends
 			}
 			target.setProductReviewCount(source.getRatingCount());
 			
-			
 			if(CollectionUtils.isNotEmpty(source.getProductPrices())) {
-				
-				ProductAvailability productAvailability = new ProductAvailability();
-				
-/*				if(productAvailability.getId() != null && productAvailability.getId().longValue() == 0) {
-				} else {
-					productAvailability.setId(null);
-				}*/
-				
+
+				//get product availability
+			  
+			    //create new ProductAvailability
+			    ProductAvailability productAvailability = new ProductAvailability();
+
+			    productAvailability.setRegion(Constants.ALL_REGIONS);
 				productAvailability.setProductQuantity(source.getQuantity());
 				productAvailability.setProduct(target);
 				productAvailability.setProductQuantityOrderMin(1);
@@ -219,32 +245,59 @@ public class PersistableProductPopulator extends
 				}
 
 			} else { //create 
+			  
+			    ProductAvailability productAvailability = null;
+			    ProductPrice defaultPrice = null;
+			    if(!CollectionUtils.isEmpty(target.getAvailabilities())) {
+			      for(ProductAvailability avail : target.getAvailabilities()) {
+    			        Set<ProductPrice> prices = avail.getPrices();
+    			        for(ProductPrice p : prices) {
+    			          if(p.isDefaultPrice()) {
+    			            if(productAvailability == null) {
+    			              productAvailability = avail;
+    			              defaultPrice = p;
+    			              break;
+    			            }
+    			            p.setDefaultPrice(false);
+    			          }
+    			        }
+			      }
+			    }
 				
-				ProductAvailability productAvailability = new ProductAvailability();
+			    if(productAvailability == null) {
+			      productAvailability = new ProductAvailability();
+			      target.getAvailabilities().add(productAvailability);
+			    }
+			    
 				productAvailability.setProduct(target);
 				productAvailability.setProductQuantity(source.getQuantity());
 				productAvailability.setProductQuantityOrderMin(1);
 				productAvailability.setProductQuantityOrderMax(1);
-				
-				ProductPrice price = new ProductPrice();
-				price.setDefaultPrice(true);
-				price.setProductPriceAmount(source.getPrice());
-				price.setCode(ProductPriceEntity.DEFAULT_PRICE_CODE);
-				price.setProductAvailability(productAvailability);
-				productAvailability.getPrices().add(price);
-				target.getAvailabilities().add(productAvailability);
-				for(Language lang : languages) {
-					ProductPriceDescription ppd = new ProductPriceDescription();
-					ppd.setProductPrice(price);
-					ppd.setLanguage(lang);
-					ppd.setName(ProductPriceDescription.DEFAULT_PRICE_DESCRIPTION);
-					price.getDescriptions().add(ppd);
+				productAvailability.setRegion(Constants.ALL_REGIONS);
+
+				if(defaultPrice != null) {
+				  defaultPrice.setProductPriceAmount(source.getPrice());
+				} else {
+				    defaultPrice = new ProductPrice();
+				    defaultPrice.setDefaultPrice(true);
+				    defaultPrice.setProductPriceAmount(source.getPrice());
+				    defaultPrice.setCode(ProductPriceEntity.DEFAULT_PRICE_CODE);
+				    defaultPrice.setProductAvailability(productAvailability);
+	                productAvailability.getPrices().add(defaultPrice);
+	                for(Language lang : languages) {
+	                
+                      ProductPriceDescription ppd = new ProductPriceDescription();
+                      ppd.setProductPrice(defaultPrice);
+                      ppd.setLanguage(lang);
+                      ppd.setName(ProductPriceDescription.DEFAULT_PRICE_DESCRIPTION);
+                      defaultPrice.getDescriptions().add(ppd);
+                    }
 				}
+
 				
 				
 			}
 
-			
 			//image
 			if(source.getImages()!=null) {
 				for(PersistableImage img : source.getImages()) {
@@ -260,7 +313,9 @@ public class PersistableProductPopulator extends
 			//attributes
 			if(source.getAttributes()!=null) {
 				for(com.salesmanager.shop.model.catalog.product.attribute.PersistableProductAttribute attr : source.getAttributes()) {
+					ProductAttribute attribute = persistableProductAttributeMapper.convert(attr, store, language);
 					
+					/*
 					ProductOption productOption = null;
 							
 					if(!StringUtils.isBlank(attr.getOption().getCode())) {
@@ -293,14 +348,14 @@ public class PersistableProductPopulator extends
 					if(productOptionValue.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 						throw new ConversionException("Invalid product option value id ");
 					}
-					
-					ProductAttribute attribute = new ProductAttribute();
+*/					
+					//ProductAttribute attribute = new ProductAttribute();
 					attribute.setProduct(target);
-					attribute.setProductOption(productOption);
+/*					attribute.setProductOption(productOption);
 					attribute.setProductOptionValue(productOptionValue);
 					attribute.setProductAttributePrice(attr.getProductAttributePrice());
 					attribute.setProductAttributeWeight(attr.getProductAttributeWeight());
-					attribute.setProductAttributePrice(attr.getProductAttributePrice());
+					attribute.setProductAttributePrice(attr.getProductAttributePrice());*/
 					target.getAttributes().add(attribute);
 
 				}
@@ -390,7 +445,6 @@ public class PersistableProductPopulator extends
 
 	@Override
 	protected Product createTarget() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
