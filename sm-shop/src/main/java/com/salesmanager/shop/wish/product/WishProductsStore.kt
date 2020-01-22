@@ -2,8 +2,6 @@ package com.salesmanager.shop.wish.product
 
 import com.salesmanager.core.business.services.catalog.category.CategoryService
 import com.salesmanager.core.business.services.catalog.product.ProductService
-import com.salesmanager.core.business.services.catalog.product.review.ProductReviewService
-import com.salesmanager.core.business.services.customer.CustomerService
 import com.salesmanager.core.business.services.merchant.MerchantStoreService
 import com.salesmanager.core.business.services.reference.language.LanguageService
 import com.salesmanager.core.model.catalog.category.Category
@@ -23,8 +21,6 @@ import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.net.URL
 import javax.inject.Inject
-import kotlin.random.Random
-import kotlin.random.nextLong
 
 @Component
 class WishProductsStore {
@@ -37,18 +33,10 @@ class WishProductsStore {
     lateinit var productService: ProductService
     @Inject
     lateinit var languageService: LanguageService
-    @Inject
-    lateinit var reviewService: ProductReviewService
-    @Inject
-    lateinit var customerService: CustomerService
 
-    @Scheduled(fixedRate = ONE_HOUR_IN_MS)
+    @Scheduled(fixedRate = HALF_HOUR_IN_MS)
     fun run() {
-        Thread.sleep(calculateSleepTime())
-        val products = WishProductsFetcher.fetch(
-            PRODUCT_COUNT,
-            PRODUCT_OFFSET
-        ).let(WishProductsParser::parse)
+        val products = WishProductsFetcher.fetch(PRODUCT_COUNT, PRODUCT_OFFSET).let(WishProductsParser::parse)
         store(products)
     }
 
@@ -56,13 +44,10 @@ class WishProductsStore {
         val store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE)
         val category = categoryService.getByCode(store, DEFAULT_CATEGORY)
         val language = languageService.defaultLanguage()
-        val customers = customerService.getListByStore(store)
         products.forEach {
             it.toDbProduct(store, category, language).let(productService::update)
         }
     }
-
-    private fun calculateSleepTime() = Random.nextLong(SLEEP_TIME_RANGE)
 
     private fun WishProductsParser.Product.toDbProduct(
         store: MerchantStore,
@@ -116,6 +101,7 @@ class WishProductsStore {
             language = lan
             seUrl = null
             product = currentProduct
+            seUrl = this@createDbProduct.id
         }
         createProductImage(currentProduct)?.let(currentProduct.images::add)
         currentProduct.descriptions.add(productDescription)
@@ -163,8 +149,6 @@ class WishProductsStore {
 
     companion object {
         private const val HALF_HOUR_IN_MS = 1800000L
-        private const val ONE_HOUR_IN_MS = HALF_HOUR_IN_MS * 2
-        private val SLEEP_TIME_RANGE = LongRange(0, HALF_HOUR_IN_MS)
         private const val PRODUCT_COUNT = 70
         private const val PRODUCT_OFFSET = 0
         private val LOGGER = LoggerFactory.getLogger(WishProductsStore::class.java)
